@@ -1,0 +1,36 @@
+.formauth{
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10em;
+    padding: 20px;
+    margin-bottom: 10em;
+    width: 800px;
+    height: 450px;
+    border: 2px solid black;
+    background-color: rgb(253, 253, 253);
+}
+
+
+.containerAddUs{
+    width: 400px;
+    background-color: rgb(253, 253, 253);
+    float: right;
+}
+.page{
+    background-color: blueviolet;
+}
+
+.forminput{
+    float: right;
+}
+
+.userlogo{
+    display: table;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 300px;
+    height: 300px;
+    size: auto;
+    float: left;
+}
