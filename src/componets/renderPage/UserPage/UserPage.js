@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import PageFooter from 'D:/Diplom/front/frontend/src/componets/Footer/PageFooter.js';
 import PageFooter from '../../../../src/componets/Footer/PageFooter';
-import "./userp.css";
+import "./user.css";
 import {connect} from 'react-redux';
 
 function mapStateToProps(state) {

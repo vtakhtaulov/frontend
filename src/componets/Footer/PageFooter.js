@@ -7,18 +7,25 @@ class Jurnal extends Component {
     render() {
         return (
             <NavDropdown title="Журналы">
-                <NavDropdown.Item href="/jurnalip">Журнал ip-адресного пространста</NavDropdown.Item>
-                <NavDropdown.Item href="/jurnalcross">Кросировачный журнал</NavDropdown.Item>
-                <NavDropdown.Item href="/jurnalchenges">Журнал изменений</NavDropdown.Item>
+                <NavDropdown.Item href="/NetworkJournal">Журнал ip-адресного пространста</NavDropdown.Item>
+                <NavDropdown.Item href="/CrossesDevice">Журнал ip - адресного пространства</NavDropdown.Item>
+                <NavDropdown.Item href="/ConfigurationDevices">Журнал изменений в конфигурации телекоммуникационного оборудования</NavDropdown.Item>
             </NavDropdown>
         );
     }
 }
 
-class Address extends Component {
+class Network extends Component {
     render() {
         return (
-            <Nav.Link href="/ipaddr">Расчет ip-адресного пространства</Nav.Link>
+            <NavDropdown title="Сеть">
+                <NavDropdown.Item href="/AnalysisIP">Анализ ip - адресного пространства</NavDropdown.Item>
+                <NavDropdown.Item href="/NetworkPool">Пулы сети</NavDropdown.Item>
+                <NavDropdown.Item href="/Network">Сети</NavDropdown.Item>
+                <NavDropdown.Item href="/VLAN">VLAN</NavDropdown.Item>
+                <NavDropdown.Item href="/DHCP">DHCP пулы</NavDropdown.Item>
+                <NavDropdown.Item href="/Nodes">Коммутационные центры</NavDropdown.Item>
+            </NavDropdown>
         );
     }
 }
@@ -26,25 +33,41 @@ class Address extends Component {
 class Device extends Component {
     render() {
         return (
-            <Nav.Link href="#">Конфигурация оборудования</Nav.Link>
+            <NavDropdown title="Устройства">
+                <NavDropdown.Item href="/Devices">Устройства организации</NavDropdown.Item>
+                <NavDropdown.Item href="/TypeDevices">Справочник типов устройств</NavDropdown.Item>
+            </NavDropdown>
         );
     }
 }
-class Topolog extends Component {
+class Topologi extends Component {
     render() {
         return (
-            <Nav.Link href="#">Топология сети</Nav.Link>
+            <Nav.Link href="/Topologi">Топология сети</Nav.Link>
         );
     }
 }
 
-class Adduser extends Component {
+class Users extends Component {
     render() {
         return (
-            <NavDropdown title="Пользователи">
-                <NavDropdown.Item href="/AllUser">Посмотреть информацию о пользователях</NavDropdown.Item>
-                <NavDropdown.Item href="/adduser">Добавить пользователя</NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link href="/Users"> Пользователи </Nav.Link>
+        );
+    }
+}
+
+class Crosses extends Component {
+    render() {
+        return (
+            <Nav.Link href="/Crosses"> Кроссировки </Nav.Link>
+        );
+    }
+}
+
+class Rooms extends Component {
+    render() {
+        return (
+            <Nav.Link href="/Rooms"> Помещения </Nav.Link>
         );
     }
 }
@@ -79,10 +102,12 @@ class ElementFooter extends Component {
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Nav className="mr-auto">
                     <Jurnal></Jurnal>
-                    <Topolog></Topolog>
-                    <Address></Address>
+                    <Network></Network>
                     <Device></Device>
-                    <Adduser></Adduser>
+                    <Crosses></Crosses>
+                    <Topologi></Topologi>
+                    <Rooms></Rooms>
+                    <Users></Users>
                 </Nav>
                 <Nav>
                     <Nav.Link href="/userpage">На главную

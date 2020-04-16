@@ -6,13 +6,13 @@ import { Panel } from 'primereact/panel';
 import { Menubar } from 'primereact/menubar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import PageFooter from '../../../../src/componets/Footer/PageFooter';
+import PageFooter from '../../Footer/PageFooter';
 
 import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
-export default class AllUser extends Component {
+export default class Users extends Component {
     constructor() {
         super();
         this.state = {};
