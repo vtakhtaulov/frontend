@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-//import PageFooter from 'D:/Diplom/front/frontend/src/componets/Footer/PageFooter.js';
 import PageFooter from '../../../../src/componets/Footer/PageFooter';
 import "./user.css";
-import {connect} from 'react-redux';
+import FormAuth from "../AuthPage/Auth";
+import {userFetchData} from "../../../Controller/user/UserController";
+import {connect} from "react-redux";
 
-function mapStateToProps(state) {
-    return {
-        FIO: state.userInfo.FIO,
-        DateBD: state.userInfo.DateBD,
-        login: state.userInfo.login,
-        email: state.userInfo.email,
-        phone: state.userInfo.phone,
-        dat: state.userInfo.dat,
-    }
-  }
+
 class UserPage extends Component {
+    constructor(props) {
+        super(props);
+    }
+    componentDidMount() {
+        console.log(this.props.users)
+    }
+
     render() {
         return (
             <div>
@@ -25,12 +24,7 @@ class UserPage extends Component {
                 </div>
                 <div className="ConteinerUserInfo">
                     <div className="pole">
-                        <div>ФИО: {this.props.FIO}</div>
-                        <div>Дата рождения: {this.props.DateBD}</div>
-                        <div>Логин: {this.props.login}</div>
-                        <div>Почта: {this.props.email}</div>
-                        <div>Телефон: {this.props.phone}</div>
-                        <div>Последняя дата входа: {this.props.dat}</div>
+
                     </div>
                 </div>
             </div>
@@ -38,5 +32,16 @@ class UserPage extends Component {
         );
     }
 }
+const  mapStateToProps = state =>{
+    return {
+        users: state.users
+    };
+};
 
-export default connect(mapStateToProps)(UserPage)
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchData: props => this.store.dispatch({type: "USERS_FETCH_DATA_SUCCESS", props})
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

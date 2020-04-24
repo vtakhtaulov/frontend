@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PageFooter from '../../Footer/PageFooter';
-import { DHCPController } from '../../../Controller/network/DHCPController.js';
+import { CrossesController } from '../../../Controller/network/CrossesController.js';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Panel } from 'primereact/panel';
@@ -11,7 +11,7 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
 
-export default class DHCP extends Component {
+export default class Crosses extends Component {
     constructor() {
         super();
         this.state = {};
@@ -32,18 +32,20 @@ export default class DHCP extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.DHCPController = new DHCPController();
+        this.CrossesController = new CrossesController();
     }
 
     componentDidMount() {
-        this.DHCPController.getAll().then(data => this.setState({ dhcp: data }));
+        this.CrossesController.getAll().then(data => this.setState({ crosses: data }));
         
         this.setState({
             visible: false,
-            dhcp: {
-                id_DHСP_pool: null,
-                address_start: null,
-                address_end: null
+            crosses: {
+                id_crosses_first: null,
+                id_crosses_end: null,
+                shkaf: null,
+                slot: null,
+                port: null
             }
         });
     }
@@ -53,11 +55,13 @@ export default class DHCP extends Component {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
-                <Panel header="Выделенные DHCP пулы сети">
-                    <DataTable value={this.state.dhcp}>
-                        <Column field="id_DHСP_pool" header="id_DHСP_pool"></Column>
-                        <Column field="address_start" header="Начальный адрес"></Column>
-                        <Column field="address_end" header="Конечный адрес"></Column>
+                <Panel header="Кроссировки">
+                    <DataTable value={this.state.crosses}>
+                        <Column field="id_crosses_first" header="id_crosses_first"></Column>
+                        <Column field="id_crosses_end" header="id_crosses_end"></Column>
+                        <Column field="shkaf" header="Шках"></Column>
+                        <Column field="slot" header="Слот подключения"></Column>
+                        <Column field="port" header="Порт подключения"></Column>
                     </DataTable>
                 </Panel>
                 

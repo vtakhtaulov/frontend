@@ -6,7 +6,7 @@ import NetworkJournal from './componets/renderPage/JurnalPage/NetworkJournal.js'
 import CrossesDevice from './componets/renderPage/JurnalPage/CrossesDevice.js';
 import ConfigurationDevices from './componets/renderPage/JurnalPage/ConfigurationDevices.js';
 import Users from './componets/renderPage/UserPage/Users.js';
-import Crosses from './componets/renderPage/Cross/Crosses.js';
+import Crosses from './componets/renderPage/NetworkPages/Crosses.js';
 import Devices from './componets/renderPage/Device/Devices.js';
 import TypeDevices from './componets/renderPage/Device/TypeDevices.js';
 import DHCP from './componets/renderPage/NetworkPages/DHCP.js';
@@ -18,24 +18,30 @@ import AnalysisIP from './componets/renderPage/NetworkPages/AnalysisIP.js';
 import Room from './componets/renderPage/Rooms/Room.js';
 import Topologi from './componets/renderPage/TopologPage/Topologi.js';
 
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route} from "react-router-dom";
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import UserPageReduser from './reducers/ReduserUserPage';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
+import {composeWithDevTools} from 'redux-devtools-extension';
+import rootReduser from './reducers/RootReduser.js';
 
 
-const store = createStore(UserPageReduser)
-
-
+const store = createStore(rootReduser,
+      composeWithDevTools(applyMiddleware(thunk)));
+global.userInfo = {
+    user_login: 1,
+    user_password: 1,
+    role: 1
+}
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <Route path="/auth" or component={FormAuth}></Route>
-        <Provider store={store}>
-          <Route path="/userpage" component={UserPage}></Route>
-        </Provider>
+          <Provider store={store}>
+             <Route path="/auth" component={FormAuth} store={store}></Route>
+             <Route path="/userpage" component={UserPage} store={store} ></Route>
+          </Provider>
         <Route path="/NetworkJournal" component={NetworkJournal}></Route>
         <Route path="/CrossesDevice" component={CrossesDevice}></Route>
         <Route path="/ConfigurationDevices" component={ConfigurationDevices}></Route>
@@ -51,9 +57,8 @@ class App extends Component {
         <Route path="/AnalysisIP" component={AnalysisIP}></Route>
         <Route path="/Rooms" component={Room}></Route>
         <Route path="/Topologi" component={Topologi}></Route>
-
       </Router>
     );
   }
 }
-export default (App)
+export default App;

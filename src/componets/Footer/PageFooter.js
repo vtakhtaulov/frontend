@@ -8,7 +8,7 @@ class Jurnal extends Component {
         return (
             <NavDropdown title="Журналы">
                 <NavDropdown.Item href="/NetworkJournal">Журнал ip-адресного пространста</NavDropdown.Item>
-                <NavDropdown.Item href="/CrossesDevice">Журнал ip - адресного пространства</NavDropdown.Item>
+                <NavDropdown.Item href="/CrossesDevice">Журнал подключений телекоммуникационного оборудования</NavDropdown.Item>
                 <NavDropdown.Item href="/ConfigurationDevices">Журнал изменений в конфигурации телекоммуникационного оборудования</NavDropdown.Item>
             </NavDropdown>
         );

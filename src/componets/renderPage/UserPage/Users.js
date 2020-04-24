@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { UserService } from '../../../service/userService/UserService';
+import { UserController } from '../../../Controller/user/UserController.js';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Panel } from 'primereact/panel';
@@ -33,11 +33,11 @@ export default class Users extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.userServise = new UserService();
+        this.UserController = new UserController();
     }
 
     componentDidMount() {
-        this.userServise.getAll().then(data => this.setState({ users: data }));
+        this.UserController.getAll().then(data => this.setState({ users: data }));
         
         this.setState({
             visible: false,
@@ -53,8 +53,6 @@ export default class Users extends Component {
             }
         });
     }
-
-
     render() {
         return (
             <div><PageFooter/>
