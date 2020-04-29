@@ -5,7 +5,7 @@ import App from './App.js';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Provider} from "react-redux";
-import {configureStore} from "./stores/configureStore"
+import configureStore from "./stores/configureStores.js";
 import * as actions from './';
 
 const store = configureStore();
