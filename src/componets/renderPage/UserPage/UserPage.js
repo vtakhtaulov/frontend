@@ -1,47 +1,40 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PageFooter from '../../../../src/componets/Footer/PageFooter';
 import "./user.css";
-import FormAuth from "../AuthPage/Auth";
-import {userFetchData} from "../../../Controller/user/UserController";
 import {connect} from "react-redux";
 
-
-class UserPage extends Component {
-    constructor(props) {
-        super(props);
-    }
-    componentDidMount() {
-        console.log(this.props.users)
-    }
-
+class UserPage extends Component{
+constructor(props) {
+    super(props);
+}
     render() {
         return (
             <div>
-                <PageFooter />
-            <div className="blockuser">
-                <div className="ConteinerUserLogo">
-                    <p><img className="logoUser" alt="Аватар" src="https://android.w-dog.info/wallpapers/0/18/438954103727068/xameleon-rango-oboi-glaza-fon-prikoly-morda.jpg" /></p>
-                </div>
-                <div className="ConteinerUserInfo">
-                    <div className="pole">
-
+                <PageFooter/>
+                <div className="blockuser">
+                    <div className="ConteinerUserLogo">
+                        <p>
+                            <img className="logoUser" alt="Аватар"
+                                src="https://android.w-dog.info/wallpapers/0/18/438954103727068/xameleon-rango-oboi-glaza-fon-prikoly-morda.jpg"/>
+                        </p>
+                    </div>
+                    <div className="ConteinerUserInfo">
+                        <div className="pole">
+                            <div>ФИО: {this.props.user_inf.fioUser}</div>
+                            <div>Логин: {this.props.user_inf.user_login}</div>
+                            <div>Номер телефона: {this.props.user_inf.phone}</div>
+                            <div>Е-маил: {this.props.user_inf.email}</div>
+                            <div>Роль: {this.props.user_inf.user_role}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         );
     }
 }
-const  mapStateToProps = state =>{
+const  mapStateToProps  = state => {
     return {
-        users: state.users
+        user_inf: state.user_info
     };
 };
-
-const  mapDispatchToProps = dispatch =>{
-    return {
-        fetchData: props => this.store.dispatch({type: "USERS_FETCH_DATA_SUCCESS", props})
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserPage);
+export default connect(mapStateToProps,null)(UserPage);

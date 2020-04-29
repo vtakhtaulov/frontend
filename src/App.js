@@ -18,30 +18,16 @@ import AnalysisIP from './componets/renderPage/NetworkPages/AnalysisIP.js';
 import Room from './componets/renderPage/Rooms/Room.js';
 import Topologi from './componets/renderPage/TopologPage/Topologi.js';
 
-import { BrowserRouter as Router, Route} from "react-router-dom";
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { createStore, applyMiddleware } from 'redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
-import rootReduser from './reducers/RootReduser.js';
-
-
-const store = createStore(rootReduser,
-      composeWithDevTools(applyMiddleware(thunk)));
-global.userInfo = {
-    user_login: 1,
-    user_password: 1,
-    role: 1
-}
+import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {connect} from "react-redux";
 
 class App extends Component {
-  render() {
+    render() {
     return (
       <Router>
-          <Provider store={store}>
-             <Route path="/auth" component={FormAuth} store={store}></Route>
-             <Route path="/userpage" component={UserPage} store={store} ></Route>
-          </Provider>
+        <Switch>
+        <Route exact path="/" component={FormAuth}></Route>
+        <Route path="/userpage" component={UserPage}></Route>
         <Route path="/NetworkJournal" component={NetworkJournal}></Route>
         <Route path="/CrossesDevice" component={CrossesDevice}></Route>
         <Route path="/ConfigurationDevices" component={ConfigurationDevices}></Route>
@@ -57,8 +43,16 @@ class App extends Component {
         <Route path="/AnalysisIP" component={AnalysisIP}></Route>
         <Route path="/Rooms" component={Room}></Route>
         <Route path="/Topologi" component={Topologi}></Route>
-      </Router>
+          {console.log(this.props.user_inf)}
+        </Switch>
+       </Router>
+
     );
   }
 }
-export default App;
+const  mapStateToProps  = state => {
+  return {
+    user_inf: state.user_info
+  };
+};
+export default connect(mapStateToProps,null)(App);
