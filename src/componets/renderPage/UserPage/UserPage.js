@@ -4,9 +4,6 @@ import "./user.css";
 import {connect} from "react-redux";
 
 class UserPage extends Component{
-constructor(props) {
-    super(props);
-}
     render() {
         return (
             <div>
@@ -20,11 +17,11 @@ constructor(props) {
                     </div>
                     <div className="ConteinerUserInfo">
                         <div className="pole">
-                            <div>ФИО: {this.props.user_inf.fioUser}</div>
-                            <div>Логин: {this.props.user_inf.user_login}</div>
-                            <div>Номер телефона: {this.props.user_inf.phone}</div>
-                            <div>Е-маил: {this.props.user_inf.email}</div>
-                            <div>Роль: {this.props.user_inf.user_role}</div>
+                            <div>ФИО: {this.props.user_auth_info.fioUser}</div>
+                            <div>Логин: {this.props.user_auth_info.user_login}</div>
+                            <div>Номер телефона: {this.props.user_auth_info.phone}</div>
+                            <div>Е-маил: {this.props.user_auth_info.email}</div>
+                            <div>Роль: {this.props.user_auth_info.user_role}</div>
                         </div>
                     </div>
                 </div>
@@ -34,7 +31,9 @@ constructor(props) {
 }
 const  mapStateToProps  = state => {
     return {
-        user_inf: state.user_info
+        user_auth_info: state.userReduser.user_auth_info
+
     };
 };
+
 export default connect(mapStateToProps,null)(UserPage);

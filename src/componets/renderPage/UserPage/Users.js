@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { UserController } from '../../../Controller/user/UserController.js';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Panel } from 'primereact/panel';
@@ -11,11 +10,12 @@ import PageFooter from '../../Footer/PageFooter';
 import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import {connect} from "react-redux";
+import {getAllUser} from "../../../Controller/user/UserController";
 
-export default class Users extends Component {
-    constructor() {
-        super();
-        this.state = {};
+class Users extends Component {
+    constructor(props) {
+        super(props);
         this.items = [
             {
                 label: 'Добавить',
@@ -33,88 +33,59 @@ export default class Users extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.UserController = new UserController();
+
+        this.table_users = this.table_users(this);
     }
 
     componentDidMount() {
-        this.UserController.getAll().then(data => this.setState({ users: data }));
-        
-        this.setState({
-            visible: false,
-            user: {
-                user_id: null,
-                familyUser: null,
-                nameUser: null,
-                otUser: null,
-                email: null,
-                phone: null,
-                userLogin: null,
-                userPassword: null
-            }
-        });
+        this.props.fetchAllUser("http://localhost:8080/User/AllUser");
     }
+
+    table_users(){
+        return <DataTable value={this.props.user_info}>
+            <Column field="user_id" header="user_id"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="last_name" header="Фамилия"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="first_name" header="Имя"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="middle_name" header="Отчество"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="email" header="Email"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="phone" header="Номер телефона"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="user_login" header="Логин"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+            <Column field="user_role" header="Роль"
+                    style={{textAlign:'center'}} sortable={true}></Column>
+        </DataTable>
+    }
+
     render() {
         return (
             <div><PageFooter/>
-                <Menubar model={this.items} />
+                <Menubar model={this.items}/>
                 <Panel header="Пользователи системы">
-                    <DataTable value={this.state.users}>
-                        <Column field="user_id" header="user_id"></Column>
-                        <Column field="last_name" header="Фамилия"></Column>
-                        <Column field="first_name" header="Имя"></Column>
-                        <Column field="middle_name" header="Отчество"></Column>
-                        <Column field="email" header="Email"></Column>
-                        <Column field="phone" header="Номер телефона"></Column>
-                        <Column field="user_login" header="Логин"></Column>
-                        <Column field="user_role" header="Роль"></Column>
-                    </DataTable>
+                    {this.table_users}
                 </Panel>
-                <Dialog header="Crear user" visible={this.state.visible}  style={{ width: '60%' }} modal={true} onHide={() => this.setState({ visible: false })}>
-                    <span className="p-float-label">
-                        <InputText id = "userLogin" />
-                        <label htmlFor="userLogin">Логин</label>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id = "userPassword"/>
-                        <label htmlFor="userPassword">Пароль</label>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id = "familyUser" value={this.state.value} onChange={(e) => this.setState({
-                            listuser : {
-                                
-                            }
-                        })} />
-                        <label htmlFor="familyUser">Фамилия</label>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id = "nameUser" value={this.state.value} onChange={(e) => this.setState(this.state.users.nameUser)} />
-                        <label htmlFor="nameUser">Имя</label>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id = "otUser" value={this.state.value} onChange={(e) => this.setState(this.state.users.otUser)} />
-                        <label htmlFor="otUser">Отчество</label>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id = "email" value={this.state.value} onChange={(e) => this.setState(this.state.users.email)} />
-                        <label htmlFor="email">Email</label>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id = "phone" value={this.state.value} onChange={(e) => this.setState(this.state.users.phone)} />
-                        <label htmlFor="phone">Телефон</label>
-                    </span>
-
-                </Dialog>
             </div>
         );
     }
-    showSaveDialog() {
-        this.setState({
-            visible: true
-        })
-    }
 }
+const  mapStateToProps  = state => {
+    return {
+        user_info: state.userReduser.user_info,
+        user_auth_info: state.userReduser.user_auth_info
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllUser: url => dispatch(getAllUser(url))
+    };
+};
 
-
+export default connect(mapStateToProps,mapDispatchToProps)(Users)
 
 
 

@@ -1,12 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
-import createLogger from 'redux-logger';
-import rootReducer from '../redusers/RootReduser';
+
 import thunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
-const logger = createLogger();
+import rootReduser from "../redusers/RootReduser";
+import {logger} from "redux-logger";
 
-const createStoreWithMiddleware = applyMiddleware(logger)(createStore);
-
-export default function configureStore(initialState) {
-  return createStoreWithMiddleware(rootReducer, initialState,composeWithDevTools(applyMiddleware(thunk)));
+const saver = store => next => action => {
+    let result=next(action);
+    localStorage['RootStore'] = JSON.stringify(store.getState());
+    return result
 }
+
+const configStor  = composeWithDevTools(applyMiddleware(logger, thunk, saver))(createStore)
+            (rootReduser,
+             JSON.parse(localStorage['RootStore']));
+
+export default configStor;

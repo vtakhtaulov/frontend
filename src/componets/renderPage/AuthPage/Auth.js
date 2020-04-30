@@ -8,13 +8,13 @@ class FormAuth extends Component{
         super(user_inf);
         this.open_ok = this.open_ok.bind(this);
     }
-     open_ok (){
+
+    open_ok (){
         let user_login = document.getElementById("login").value; //получить значение из поля по ид
         let user_pass = document.getElementById("password").value;
         this.props.fetchData("http://localhost:8080/User/loginUser?user_login="+user_login+"&user_password="+user_pass);
-        console.log(this.props.user_inf);
 
-        if (user_login === this.props.users_inf.user_login && user_pass === this.props.users_inf.user_password) {
+        if (user_login === this.props.user_auth_info.user_login && user_pass === this.props.user_auth_info.user_password) {
             window.location.assign('http://localhost:3000/userpage');
         }
         else {
@@ -53,7 +53,7 @@ class FormAuth extends Component{
 }
 const  mapStateToProps = state =>{
     return {
-        users_inf: state.user_info
+        user_auth_info: state.userReduser.user_auth_info
     };
 };
 
