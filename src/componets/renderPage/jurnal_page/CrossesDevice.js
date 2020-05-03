@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
-import {User_controller} from "../../../controllers/user_controllers/user_controller";
 import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
@@ -29,7 +28,6 @@ export default class CrossesDevice extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.UserController = new User_controller();
     }
 
     componentDidMount() {

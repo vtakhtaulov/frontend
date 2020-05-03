@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
-import { Network_pool_controller} from '../../../controllers/network_controllers/network_pool_controller.js';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Panel } from 'primereact/panel';
@@ -9,11 +8,12 @@ import { Menubar } from 'primereact/menubar';
 import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import {connect} from "react-redux";
+import {getAllNetworkPool} from "../../../controllers/network_controllers/network_pool_controller";
 
-export default class NetworkPool extends Component {
-    constructor() {
-        super();
-        this.state = {};
+class NetworkPool extends Component {
+    constructor(props) {
+        super(props);
         this.items = [
             {
                 label: 'Добавить',
@@ -31,47 +31,53 @@ export default class NetworkPool extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.NetworkPoolController = new Network_pool_controller();
+        this.tableNetworkPool =this.tableNetworkPool(this);
     }
 
     componentDidMount() {
-        this.NetworkPoolController.getAll().then(data => this.setState({ pool: data }));
-        
-        this.setState({
-            visible: false,
-            pool: {
-                id_pool_address: null,
-                name_pool: null,
-                ip_addres_start: null,
-                ip_addres_end: null,
-                date_reg: null,
-                date_old: null,
-                user_old: null,
-                user_reg: null
-            }
-        });
+        this.props.fetchAllNetworkPool("http://localhost:8080/Pool/PoolAll");
     }
-
+    tableNetworkPool(){
+        return <DataTable value={this.props.all_network_pool} responsive={true} scrollable={true}>
+            <Column field="id_pool_address" header="id_pool_address"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="name_pool" header="Наименование"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="ip_addres_start" header="Начальный адрес"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="ip_addres_end" header="Конечный адрес"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="date_reg" header="Дата создания"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="user_reg" header="Создал"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="date_old" header="Дата изменения"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+            <Column field="user_old" header="Изменил"
+                 style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
+        </DataTable>
+    }
 
     render() {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Выделенные пулы сети">
-                    <DataTable value={this.state.pool}>
-                        <Column field="id_pool_address" header="id_pool_address"></Column>
-                        <Column field="name_pool" header="Наименование"></Column>
-                        <Column field="ip_addres_start" header="Начальный адрес"></Column>
-                        <Column field="ip_addres_end" header="Конечный адрес"></Column>
-                        <Column field="date_reg" header="Дата создания"></Column>
-                        <Column field="user_reg" header="Создал"></Column>
-                        <Column field="date_old" header="Дата изменения"></Column>
-                        <Column field="user_old" header="Изменил"></Column>
-                    </DataTable>
+                    {this.tableNetworkPool}
                 </Panel>
                 
             </div>
         );
     }
-
 }
+const  mapStateToProps  = state => {
+    return {
+        all_network_pool: state.networ_pool_reduser.all_network_pool
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllNetworkPool: url => dispatch(getAllNetworkPool(url))
+    };
+};
+export default connect(mapStateToProps,mapDispatchToProps)(NetworkPool)

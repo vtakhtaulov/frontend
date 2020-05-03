@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
-import {User_controller} from "../../../controllers/user_controllers/user_controller";
 import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {connect} from "react-redux";
+import {getAllDevice} from "../../../controllers/device_controllers/device_controller";
 
-export default class Devices extends Component {
-    constructor() {
-        super();
+class Devices extends Component {
+    constructor(props) {
+        super(props);
         this.state = {};
         this.items = [
             {
@@ -27,51 +28,53 @@ export default class Devices extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.UserController = new User_controller();
-    }
 
+        this.table_devices = this.table_devices(this);
+    }
     componentDidMount() {
-       // this.User_controller.getAll().then(data => this.setState({ users_reduser: data }));
-
-        this.setState({
-            visible: false,
-            devices: {
-                id_devices: null,
-                id_type_devices: null,
-                type_device: null,
-                id_user_otv: null,
-                user_otv: null,
-                hostname: null,
-                mac_address: null,
-                id_room: null,
-                room: null,
-                id_props_port: null,
-                countOptPort: null,
-                countEthernetPort: null
-            }
-        });
+        this.props.fetchAllDevice("http://localhost:8080/Devices/DevicesAll");
     }
+
+    table_devices(){
+        return <DataTable value={this.props.device_info} responsive={true} scrollable={true}>
+            <Column field="id_devices" header="Код устройства"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="type_device" header="Тип устройства"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="hostname" header="Hostname"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="mac_address" header="MAC-адрес"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="countEthernetPort" header="Кол-во Ethernet портов"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="countOptPort" header="Кол-во портов под оптоволокно"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_otv" header="Ответственный"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+        </DataTable>
+    }
+
     render() {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Оборудование организации">
-                    <DataTable value={this.state.users}>
-                        <Column field="id_devices" header="Код устройства"></Column>
-                        <Column field="type_device" header="Тип устройства"></Column>
-                        <Column field="hostname" header="Hostname"></Column>
-                        <Column field="mac_address" header="MAC-адрес"></Column>
-                        <Column field="countEthernetPort" header="Кол-во Ethernet портов"></Column>
-                        <Column field="countOptPort" header="Кол-во портов под оптоволокно"></Column>
-                        <Column field="user_otv" header="Ответственный"></Column>
-                    </DataTable>
+                    {this.table_devices}
                 </Panel>
             </div>
         );
     }
-    showSaveDialog() {
-        this.setState({
-            visible: true
-        })
-    }
 }
+
+const  mapStateToProps  = state => {
+    return {
+        device_info: state.device_reduser.device_info
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllDevice: url => dispatch(getAllDevice("all",url))
+    };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(Devices)

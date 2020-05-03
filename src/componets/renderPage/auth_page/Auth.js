@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Auth.css';
-import {getAuthUser} from "../../../controllers/user_controllers/user_controller";
+import {getUser} from "../../../controllers/user_controllers/user_controller";
 import {connect} from "react-redux";
 
 class FormAuth extends Component{
@@ -59,7 +59,7 @@ const  mapStateToProps = state =>{
 
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchData: url => dispatch(getAuthUser(url))
+        fetchData: url => dispatch(getUser("auth",url))
     };
 };
 

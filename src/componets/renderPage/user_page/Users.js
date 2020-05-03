@@ -11,7 +11,7 @@ import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import {connect} from "react-redux";
-import {getAllUser} from "../../../controllers/user_controllers/user_controller";
+import {getUser} from "../../../controllers/user_controllers/user_controller";
 
 class Users extends Component {
     constructor(props) {
@@ -33,10 +33,7 @@ class Users extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.state = {
-            globalFilter: null,
-            visible: false
-        };
+        this.state={};
 
         this.table_users = this.table_users(this);
         this.dialog_show = this.dialog_show(this);
@@ -44,6 +41,11 @@ class Users extends Component {
 
     componentDidMount() {
         this.props.fetchAllUser("http://localhost:8080/User/AllUser");
+    }
+    showSaveDialog() {
+        this.setState({
+            visible: true
+        })
     }
 
     table_users(){
@@ -120,10 +122,9 @@ const  mapStateToProps  = state => {
 };
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchAllUser: url => dispatch(getAllUser(url))
+        fetchAllUser: url => dispatch(getUser("all",url))
     };
 };
-
 
 export default connect(mapStateToProps,mapDispatchToProps)(Users)
 
