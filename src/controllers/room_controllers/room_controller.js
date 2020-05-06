@@ -9,7 +9,7 @@ export function getRoomSuccess(type, room_info){
     }
 }
 
-export function getAllRoom(url){
+export function getAllRoom(type, url){
     return (dispatch) =>{
         fetch(url)
             .then(response =>{
@@ -20,7 +20,7 @@ export function getAllRoom(url){
             })
             .then(response => response.json())
             .then(room_info => dispatch(
-                getRoomSuccess("all",room_info))
+                getRoomSuccess(type ,room_info))
             )
     }
 }

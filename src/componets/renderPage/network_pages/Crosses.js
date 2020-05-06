@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
-import { Crosses_controller } from '../../../controllers/network_controllers/crosses_controller.js';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Panel } from 'primereact/panel';
@@ -10,10 +9,12 @@ import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
+import {connect} from "react-redux";
+import {getAllCrosses} from "../../../controllers/network_controllers/crosses_controller";
 
-export default class Crosses extends Component {
-    constructor() {
-        super();
+class Crosses extends Component {
+    constructor(props) {
+        super(props);
         this.state = {};
         this.items = [
             {
@@ -32,41 +33,50 @@ export default class Crosses extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.CrossesController = new Crosses_controller();
+        this.crosses_table = this.crosses_table(this);
     }
 
     componentDidMount() {
-        this.CrossesController.getAll().then(data => this.setState({ crosses: data }));
-        
-        this.setState({
-            visible: false,
-            crosses: {
-                id_crosses_first: null,
-                id_crosses_end: null,
-                shkaf: null,
-                slot: null,
-                port: null
-            }
-        });
+        this.props.fetchAllCrosses("http://localhost:8080/Crosses/CrossesAll");
+
     }
 
+    crosses_table(){
+        return <DataTable value={this.props.crosses_info} responsive={true} scrollable={true}>
+            <Column field="id_crosses_first" header="id_crosses_first"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="id_crosses_end" header="id_crosses_end"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="shkaf" header="Шках"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="slot" header="Слот подключения"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="port" header="Порт подключения"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+        </DataTable>
+    }
 
     render() {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Кроссировки">
-                    <DataTable value={this.state.crosses}>
-                        <Column field="id_crosses_first" header="id_crosses_first"></Column>
-                        <Column field="id_crosses_end" header="id_crosses_end"></Column>
-                        <Column field="shkaf" header="Шках"></Column>
-                        <Column field="slot" header="Слот подключения"></Column>
-                        <Column field="port" header="Порт подключения"></Column>
-                    </DataTable>
+                    {this.crosses_table}
                 </Panel>
-                
             </div>
         );
     }
-
 }
+
+const  mapStateToProps  = state => {
+    return {
+        crosses_info: state.crosses_reduser.crosses_info
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllCrosses: url => dispatch(getAllCrosses("all",url))
+    };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(Crosses)

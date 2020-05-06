@@ -1,16 +1,16 @@
-export function getDHCPSuccess(type, dhcp_info){
+export function getConfigurationSuccess(type, config_dev_info){
     switch (type) {
         case "all":
             return {
-                type: "get_all_dhcp_success",
-                dhcp_info: dhcp_info
+                type: "get_all_configuration_success",
+                config_dev_info: config_dev_info
             };
         default: return [];
     }
 
 }
 
-export function getAllDHCP(type, url){
+export function getAllConfiguration(type,url){
     return (dispatch) =>{
         fetch(url)
             .then(response =>{
@@ -20,8 +20,8 @@ export function getAllDHCP(type, url){
                 return response;
             })
             .then(response => response.json())
-            .then( dhcp_info => dispatch(
-                getDHCPSuccess(type,dhcp_info))
+            .then(config_dev_info => dispatch(
+                getConfigurationSuccess(type,config_dev_info))
             )
     }
 }

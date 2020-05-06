@@ -1,16 +1,15 @@
-export function getDHCPSuccess(type, dhcp_info){
+export function getVlanSuccess(type, vlan_info){
     switch (type) {
         case "all":
             return {
-                type: "get_all_dhcp_success",
-                dhcp_info: dhcp_info
+                type: "get_all_vlan_success",
+                vlan_info: vlan_info
             };
         default: return [];
     }
-
 }
 
-export function getAllDHCP(type, url){
+export function getAllVlan(type, url){
     return (dispatch) =>{
         fetch(url)
             .then(response =>{
@@ -20,8 +19,8 @@ export function getAllDHCP(type, url){
                 return response;
             })
             .then(response => response.json())
-            .then( dhcp_info => dispatch(
-                getDHCPSuccess(type,dhcp_info))
+            .then(vlan_info => dispatch(
+                getVlanSuccess(type,vlan_info))
             )
     }
 }

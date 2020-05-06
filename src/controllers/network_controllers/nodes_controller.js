@@ -7,10 +7,9 @@ export function getNodesSuccess(type, nodes_info){
             };
         default: return [];
     }
-
 }
 
-export function getAllNodes(url){
+export function getAllNodes(type, url){
     return (dispatch) =>{
         fetch(url)
             .then(response =>{
@@ -21,7 +20,7 @@ export function getAllNodes(url){
             })
             .then(response => response.json())
             .then(nodes_info => dispatch(
-                getNodesSuccess("all",nodes_info))
+                getNodesSuccess(type ,nodes_info))
             )
     }
 }

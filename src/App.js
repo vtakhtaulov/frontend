@@ -26,7 +26,7 @@ class App extends Component {
     return (
       <Router>
           <Switch>
-            <Route exact path="/" component={FormAuth}></Route>
+            <Route path="/auth" component={FormAuth}></Route>
             <Route path="/userpage" component={UserPage}></Route>
             <Route path="/NetworkJournal" component={NetworkJournal}></Route>
             <Route path="/CrossesDevice" component={CrossesDevice}></Route>

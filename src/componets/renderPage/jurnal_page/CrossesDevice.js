@@ -4,12 +4,12 @@ import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {connect} from "react-redux";
+import {getAllCrossDevice} from "../../../controllers/journal_controllers/crossDevice_controller";
 
-
-
-export default class CrossesDevice extends Component {
-    constructor() {
-        super();
+class CrossesDevice extends Component {
+    constructor(props) {
+        super(props);
         this.state = {};
         this.items = [
             {
@@ -28,60 +28,59 @@ export default class CrossesDevice extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
+        this.crossDevice_table = this.crossDevice_table(this);
     }
 
     componentDidMount() {
-        // this.User_controller.getAll().then(data => this.setState({ users_reduser: data }));
+        this.props.fetchAllCrossDevice("http://localhost:8080/CrossDevices/CrossDevicesAll");
+    }
 
-        this.setState({
-            visible: false,
-            crossesDevicesJournal: {
-                Id_crossdevices: null,
-                id_devices_first: null,
-                host_name_start: null,
-                id_devices_end: null,
-                host_name_end: null,
-                id_network_journal: null,
-                description: null,
-                id_vlan: null,
-                name_vlan: null,
-                id_crosses: null,
-                info_crosses: null,
-                id_user_otv: null,
-                user_otv: null,
-                date_reg: null,
-                id_user_old: null,
-                user_old: null,
-                date_old: null,
-                actual: null,
-            }
-        });
+    crossDevice_table(){
+        return <DataTable value={this.props.cross_device_info} responsive={true} scrollable={true}>
+            <Column field="host_name_start" header="Hostname начального уст-ва"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="host_name_end" header="Hostname подключаемого устройства"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="id_network_journal" header="Запись в журнале ip-адресного пр-ва"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="description" header="Изменения"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="name_vlan" header="Наименование VLAN"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="info_crosses" header="Информация о подключении"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_otv" header="Пользователь создавший запись"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="date_reg" header="Дата регистрации"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_old" header="Пользователь изменивший запись"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="date_old" header="Дата изменения"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="actual" header="Актуальность"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+        </DataTable>
     }
     render() {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Журнал сетевых подключений телекоммуникационного оборудования">
-                    <DataTable value={this.state.crossesDevicesJournal}>
-                        <Column field="host_name_start" header="Hostname начального уст-ва"></Column>
-                        <Column field="host_name_end" header="Hostname подключаемого устройства"></Column>
-                        <Column field="id_network_journal" header="Запись в журнале ip-адресного пр-ва"></Column>
-                        <Column field="description" header="Изменения"></Column>
-                        <Column field="name_vlan" header="Наименование VLAN"></Column>
-                        <Column field="info_crosses" header="Информация о подключении"></Column>
-                        <Column field="user_otv" header="Пользователь создавший запись"></Column>
-                        <Column field="date_reg" header="Дата регистрации"></Column>
-                        <Column field="user_old" header="Пользователь изменивший запись"></Column>
-                        <Column field="date_old" header="Дата изменения"></Column>
-                        <Column field="actual" header="Актуальность"></Column>
-                    </DataTable>
+                    {this.crossDevice_table}
                 </Panel>
             </div>
         );
     }
-    showSaveDialog() {
-        this.setState({
-            visible: true
-        })
-    }
 }
+const  mapStateToProps  = state => {
+    return {
+        cross_device_info: state.crossDevice_reduser.cross_device_info
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllCrossDevice: url => dispatch(getAllCrossDevice("all",url))
+    };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(CrossesDevice)

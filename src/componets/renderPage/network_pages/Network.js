@@ -4,12 +4,12 @@ import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {connect} from "react-redux";
+import {getAllNetwork} from "../../../controllers/network_controllers/network_controller";
 
-
-
-export default class Network extends Component {
-    constructor() {
-        super();
+class Network extends Component {
+    constructor(props) {
+        super(props);
         this.state = {};
         this.items = [
             {
@@ -28,61 +28,62 @@ export default class Network extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
+        this.network_table = this.network_table(this);
     }
 
     componentDidMount() {
-        // this.User_controller.getAll().then(data => this.setState({ users_reduser: data }));
+        this.props.fetchAllNetwork("http://localhost:8080/Network/NetworkAll");
+    }
 
-        this.setState({
-            visible: false,
-            networkJournal: {
-                id_network: null,
-                id_pool_address: null,
-                pool_address: null,
-                ip_address_network: null,
-                networkMask: null,
-                defaultGeteway: null,
-                id_vlan: null,
-                vlan: null,
-                id_dhcp_pool: null,
-                dhcp_pool: null,
-                number_mstp: null,
-                id_user_reg: null,
-                user_reg: null,
-                id_user_old: null,
-                user_old: null,
-                date_reg: null,
-                date_old: null,
-                actual: null
-            }
-        });
+    network_table() {
+        return <DataTable value={this.props.all_network} responsive={true} scrollable={true}>
+            <Column field="pool_address" header="Пул сети"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="ip_address_network" header="ip-адресс сети"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="networkMask" header="Маска"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="defaultGeteway" header="Default Geteway"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="vlan" header="Наименование VLAV"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="dhcp_pool" header="DHCP пул"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="number_mstp" header="Номер MSTP"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_reg" header="Пользователь создавший запись"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="date_reg" header="Дата создания"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_old" header="Пользователь изменивший запись"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="date_old" header="Дата изменения"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="actual" header="Актуальность"
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+        </DataTable>
     }
     render() {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Сети">
-                    <DataTable value={this.state.networkJournal}>
-                        <Column field="pool_address" header="Пул сети"></Column>
-                        <Column field="ip_address_network" header="ip-адресс сети"></Column>
-                        <Column field="networkMask" header="Маска"></Column>
-                        <Column field="defaultGeteway" header="Default Geteway"></Column>
-                        <Column field="vlan" header="Наименование VLAV"></Column>
-                        <Column field="dhcp_pool" header="DHCP пул"></Column>
-                        <Column field="number_mstp" header="Номер MSTP"></Column>
-                        <Column field="user_reg" header="Пользователь создавший запись"></Column>
-                        <Column field="date_reg" header="Дата создания"></Column>
-                        <Column field="user_old" header="Пользователь изменивший запись"></Column>
-                        <Column field="date_old" header="Дата изменения"></Column>
-                        <Column field="actual" header="Актуальность"></Column>
-                    </DataTable>
+                    {this.network_table}
                 </Panel>
             </div>
         );
     }
-    showSaveDialog() {
-        this.setState({
-            visible: true
-        })
-    }
 }
+
+const  mapStateToProps  = state => {
+    return {
+        all_network: state.network_reduser.all_network
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllNetwork: url => dispatch(getAllNetwork("all",url))
+    };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(Network)

@@ -1,11 +1,15 @@
 
-export function getNetworkPoll(network_pool){
-    return {
-        type: "get_network_pool",
-        network_pool: network_pool
+export function getNetworkPoll(type, network_pool){
+    switch (type) {
+        case "all":
+            return {
+                type: "get_network_pool",
+                network_pool: network_pool
+            };
+        default: return [];
     }
 }
-export function getAllNetworkPool (url){
+export function getAllNetworkPool (type, url){
     return (dispatch) =>{
         fetch(url)
             .then(response =>{
@@ -15,6 +19,6 @@ export function getAllNetworkPool (url){
                 return response;
             })
             .then(response => response.json())
-            .then(network_pool => dispatch(getNetworkPoll(network_pool)))
+            .then( network_pool => dispatch(getNetworkPoll(type, network_pool)))
     }
 }

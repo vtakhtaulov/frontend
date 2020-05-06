@@ -4,11 +4,13 @@ import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {connect} from "react-redux";
+import {getAllConfiguration} from "../../../controllers/journal_controllers/configuration_controller";
 
 
-export default class ConfigurationDevices extends Component{
-    constructor() {
-        super();
+class ConfigurationDevices extends Component{
+    constructor(props) {
+        super(props);
         this.state = {};
         this.items = [
             {
@@ -27,54 +29,48 @@ export default class ConfigurationDevices extends Component{
                 command: () => { alert('Удалено!') }
             }
         ];
+        this.configuration_table = this.configuration_table(this);
     }
 
     componentDidMount() {
-        // this.User_controller.getAll().then(data => this.setState({ users_reduser: data }));
-
-        this.setState({
-            visible: false,
-            configurationJournak: {
-                id_config: null,
-                id_divice: null,
-                host_name: null,
-                config_first: null,
-                config_last: null,
-                deference: null,
-                id_user_reg: null,
-                user_reg: null,
-                id_user_old: null,
-                user_old: null,
-                date_reg: null,
-                date_old: null,
-                actual: null
-            }
-        });
+        this.props.fetchAllConfiguration("http://localhost:8080/Configuration/ConfigurationAll");
     }
+
+    configuration_table(){
+        return  <DataTable value={this.props.configuration_info} responsive={true} scrollable={true}>
+            <Column field="id_config" header="id конфигурации" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="host_name" header="Hostname устройства" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="config_first" header="Начальная конфигурация" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="config_last" header="Конфигурация после изменений" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="deference" header="Разница" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_reg" header="Пользователь создавший запись" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="date_reg" header="Дата регистрации" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="user_old" header="Пользователь изменивший запись" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="date_old" header="Дата изменения" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+            <Column field="actual" header="Актуальность" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+        </DataTable>
+    }
+
     render() {
         return (
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Журнал конфигурации телекоммуникационного оборудования">
-                    <DataTable value={this.state.configurationJournak}>
-                        <Column field="id_config" header="id конфигурации"></Column>
-                        <Column field="host_name" header="Hostname устройства"></Column>
-                        <Column field="config_first" header="Начальная конфигурация"></Column>
-                        <Column field="config_last" header="Конфигурация после изменений"></Column>
-                        <Column field="deference" header="Разница"></Column>
-                        <Column field="user_reg" header="Пользователь создавший запись"></Column>
-                        <Column field="date_reg" header="Дата регистрации"></Column>
-                        <Column field="user_old" header="Пользователь изменивший запись"></Column>
-                        <Column field="date_old" header="Дата изменения"></Column>
-                        <Column field="actual" header="Актуальность"></Column>
-                    </DataTable>
+                    {this.configuration_table}
                 </Panel>
             </div>
         );
     }
-    showSaveDialog() {
-        this.setState({
-            visible: true
-        })
-    }
 }
+const  mapStateToProps  = state => {
+    return {
+        configuration_info: state.configuration_reduser.configuration_info
+    };
+};
+const  mapDispatchToProps = dispatch =>{
+    return {
+        fetchAllConfiguration: url => dispatch(getAllConfiguration("all",url))
+    };
+};
+
+export default connect(mapStateToProps,mapDispatchToProps)(ConfigurationDevices)

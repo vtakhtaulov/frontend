@@ -7,7 +7,6 @@ export function getTypeDeviceSuccess(type, type_device_info){
             };
         default: return [];
     }
-
 }
 
 export function getAllTypeDevice(url){
