@@ -9,10 +9,10 @@ class FormAuth extends Component{
         this.open_ok = this.open_ok.bind(this);
     }
 
-    open_ok (){
+    async open_ok (){
         let user_login = document.getElementById("login").value; //получить значение из поля по ид
         let user_pass = document.getElementById("password").value;
-        this.props.fetchData("http://localhost:8080/User/loginUser?user_login="+user_login+"&user_password="+user_pass);
+        await this.props.fetchData("http://localhost:8080/User/loginUser?user_login="+user_login+"&user_password="+user_pass);
 
         if (user_login === this.props.user_auth_info.user_login && user_pass === this.props.user_auth_info.user_password) {
             window.location.assign('http://localhost:3000/userpage');
@@ -44,7 +44,6 @@ class FormAuth extends Component{
                     </div>
                     <div>
                         <button id='buttonVxod' name="buttonVxod" onClick={this.open_ok}>Войти</button>
-
                     </div>
                 </div>
             </div>

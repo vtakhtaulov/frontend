@@ -38,7 +38,7 @@ class NetworkPool extends Component {
         this.props.fetchAllNetworkPool("http://localhost:8080/Pool/PoolAll");
     }
     tableNetworkPool(){
-        return <DataTable value={this.props.all_network_pool} responsive={true} scrollable={true}>
+        return <DataTable value={this.props.network_pool} responsive={true} scrollable={true}>
             <Column field="id_pool_address" header="id_pool_address"
                  style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains">></Column>
             <Column field="name_pool" header="Наименование"
@@ -72,12 +72,12 @@ class NetworkPool extends Component {
 }
 const  mapStateToProps  = state => {
     return {
-        all_network_pool: state.networ_pool_reduser.all_network_pool
+        network_pool: state.networ_pool_reduser.network_pool
     };
 };
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchAllNetworkPool: url => dispatch(getAllNetworkPool(url))
+        fetchAllNetworkPool: url => dispatch(getAllNetworkPool("all",url))
     };
 };
 export default connect(mapStateToProps,mapDispatchToProps)(NetworkPool)

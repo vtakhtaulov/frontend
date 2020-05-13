@@ -33,7 +33,6 @@ class Crosses extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.crosses_table = this.crosses_table(this);
     }
 
     componentDidMount() {
@@ -61,7 +60,7 @@ class Crosses extends Component {
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Кроссировки">
-                    {this.crosses_table}
+                    {this.crosses_table(this)}
                 </Panel>
             </div>
         );
@@ -75,7 +74,7 @@ const  mapStateToProps  = state => {
 };
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchAllCrosses: url => dispatch(getAllCrosses("all",url))
+        fetchAllCrosses: url => dispatch( getAllCrosses("all",url))
     };
 };
 

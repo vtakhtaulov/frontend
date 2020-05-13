@@ -27,7 +27,6 @@ class Rooms extends Component {
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.room_table = this.room_table(this);
     }
     componentDidMount() {
         this.props.fetchRoom("http://localhost:8080/Room/RoomlAll");
@@ -53,7 +52,7 @@ class Rooms extends Component {
         return (
             <div>
                 <PageFooter />
-                {this.room_table}
+                {this.room_table(this)}
             </div>
         );
     }
@@ -65,7 +64,7 @@ const  mapStateToProps  = state => {
 };
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchRoom: url => dispatch(getAllRoom(url))
+        fetchRoom: url => dispatch(getAllRoom("all",url))
     };
 };
 export default connect(mapStateToProps,mapDispatchToProps)(Rooms)

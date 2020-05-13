@@ -13,6 +13,7 @@ import configuration_reduser from "./journal_reduser/configuration_reduser";
 import crossDevice_reduser from "./journal_reduser/crossDevice_reduser";
 import networkJournal_reduser from "./journal_reduser/networkJournal_reduser";
 import network_reduser from "./network_reduser/network_reduser";
+import action_user_reduser from "./action_user_reduser";
 
 const root_reduser = combineReducers({
    user_reduser: user_reduser,
@@ -28,7 +29,8 @@ const root_reduser = combineReducers({
    configuration_reduser: configuration_reduser,
    crossDevice_reduser: crossDevice_reduser,
    networkJournal_reduser: networkJournal_reduser,
-   network_reduser: network_reduser
+   network_reduser: network_reduser,
+   action_visible: action_user_reduser
 
 })
 

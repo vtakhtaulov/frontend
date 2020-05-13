@@ -29,15 +29,14 @@ class ConfigurationDevices extends Component{
                 command: () => { alert('Удалено!') }
             }
         ];
-        this.configuration_table = this.configuration_table(this);
     }
 
     componentDidMount() {
-        this.props.fetchAllConfiguration("http://localhost:8080/Configuration/ConfigurationAll");
+         this.props.fetchAllConfiguration("http://localhost:8080/Configuration/ConfigurationAll");
     }
 
     configuration_table(){
-        return  <DataTable value={this.props.configuration_info} responsive={true} scrollable={true}>
+        return  <DataTable value={this.props.config_dev_info} responsive={true} scrollable={true}>
             <Column field="id_config" header="id конфигурации" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
             <Column field="host_name" header="Hostname устройства" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
             <Column field="config_first" header="Начальная конфигурация" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
@@ -56,7 +55,7 @@ class ConfigurationDevices extends Component{
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Журнал конфигурации телекоммуникационного оборудования">
-                    {this.configuration_table}
+                    {this.configuration_table(this)}
                 </Panel>
             </div>
         );
@@ -64,12 +63,12 @@ class ConfigurationDevices extends Component{
 }
 const  mapStateToProps  = state => {
     return {
-        configuration_info: state.configuration_reduser.configuration_info
+        config_dev_info: state.configuration_reduser.config_dev_info
     };
 };
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchAllConfiguration: url => dispatch(getAllConfiguration("all",url))
+        fetchAllConfiguration: async url => dispatch( await getAllConfiguration("all", url))
     };
 };
 

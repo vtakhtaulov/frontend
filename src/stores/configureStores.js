@@ -5,14 +5,21 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import root_reduser from "../redusers/RootReduser";
 import {logger} from "redux-logger";
 
-const saver = store => next => action => {
+
+let saver = store => next => action => {
     let result=next(action);
     localStorage['RootStore'] = JSON.stringify(store.getState());
     return result
 }
 
-const configStor  = composeWithDevTools(applyMiddleware(logger, thunk, saver))(createStore)
+//const lastStorage = store => localStorage['RootStore'] = JSON.stringify(store.getState());
+let middleware = applyMiddleware(logger, thunk, saver);
+let container = JSON.parse(localStorage['RootStore']);
+
+
+let configStor  = composeWithDevTools(middleware)(createStore)
             (root_reduser,
-             JSON.parse(localStorage['RootStore']));
+                container
+            );
 
 export default configStor;

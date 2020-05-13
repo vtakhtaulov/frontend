@@ -15,19 +15,60 @@ export function getUserSuccess(type, user_info){
 
 }
 
- export function getUser(type,url){
-      return (dispatch) =>{
-          fetch(url)
-          .then(response =>{
-              if(response.status!==200){
-                  throw new Error(response.statusText)
-              }
-              return response;
-          })
-          .then(response => response.json())
-          .then(user_info => dispatch(
-              getUserSuccess(type,user_info))
-          )
+ export function getUser(type,url) {
+     return async (dispatch) => {
+         await fetch(url)
+             .then(response => {
+                 if (response.status !== 200) {
+                     throw new Error(response.statusText)
+                 }
+                 return response;
+             })
+             .then(response => response.json())
+             .then(user_info => dispatch(
+                 getUserSuccess(type, user_info))
+             )
+     }
+ }
+
+export function setUser(type, url, data) {
+    return (dispatch) => {
+         fetch(url, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(user_info => dispatch(
+                getUserSuccess(type, user_info))
+            )
     }
 }
 
+export function deleteUser(type, url, data) {
+    return (dispatch) => {
+        fetch(url+data, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(user_info => dispatch(
+                getUserSuccess(type, user_info))
+            )
+    }
+}

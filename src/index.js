@@ -11,6 +11,5 @@ const app =(<Provider store={configStor}>
                 <App/>
             </Provider>);
 
-
 ReactDOM.render(app,AppPage);
 serviceWorker.unregister();

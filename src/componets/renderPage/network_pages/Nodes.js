@@ -61,7 +61,7 @@ const  mapStateToProps  = state => {
 };
 const  mapDispatchToProps = dispatch =>{
     return {
-        fetchNodes: url => dispatch(getAllNodes(url))
+        fetchNodes: url => dispatch(getAllNodes("all",url))
     };
 };
 export default connect(mapStateToProps,mapDispatchToProps)(Nodes)
