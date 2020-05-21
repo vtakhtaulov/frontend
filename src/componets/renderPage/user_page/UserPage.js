@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PageFooter from '../../footer/PageFooter';
 import "./user.css";
 import {connect} from "react-redux";
-
 class UserPage extends Component{
     render() {
         return (

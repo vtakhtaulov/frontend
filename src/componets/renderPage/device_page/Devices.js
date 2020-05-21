@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
-import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
@@ -17,21 +16,12 @@ import {InputText} from "primereact/inputtext";
 import {Dropdown} from "primereact/dropdown";
 import {getUserSelect} from "../../../controllers/user_controllers/user_controller";
 import {getRoomSelect} from "../../../controllers/room_controllers/room_controller";
-
-
-
+import {getStatusSelect} from "../../../controllers/status_controller";
 
 class Devices extends Component {
     constructor(props) {
         super(props);
-        this.items = [
-            {
-                label: 'Добавить',
-                icon: 'pi pi-fw pi-plus',
-                command: () => {this.props.visible(true)}
-            }
-        ];
-
+        this.state= {};
     }
     componentDidMount() {
         this.props.fetchAllDevice("http://localhost:8080/Devices/DevicesAll");
@@ -41,7 +31,7 @@ class Devices extends Component {
 
     table_devices(){
         return <DataTable value= {this.props.device_info} responsive={true} scrollable={true}>
-            <Column field="type_device" header="Тип устройства"
+            <Column field="type_device" header="Тип устройства" autoLayout = {true}
                     style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -51,7 +41,7 @@ class Devices extends Component {
                             });
                             return <div>
                                 <Dropdown  value={[this.props.selectDeviceValue.label]} options={type_device_info} editable ={true}
-                                           id = "update_type_device"  style={{textAlign:'center'}}
+                                           id = "update_type_device"  style={{textAlign:'center'}} filter={true}
                                            className={'p-dropdown'}
                                            onChange={(e)=>{
                                                let label;
@@ -75,7 +65,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="hostname" header="Hostname"
+            <Column field="hostname" header="Hostname" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -91,7 +81,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="mac_address" header="MAC-адрес"
+            <Column field="mac_address" header="MAC-адрес" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -107,7 +97,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="inventar_number" header="Интвентарный номер"
+            <Column field="inventar_number" header="Интвентарный номер" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -123,7 +113,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="countEthernetPort" header="Кол-во Ethernet портов"
+            <Column field="countEthernetPort" header="Кол-во Ethernet портов" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -139,7 +129,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="countOptPort" header="Кол-во портов под оптоволокно"
+            <Column field="countOptPort" header="Кол-во портов под оптоволокно" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -155,7 +145,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="room" header="Помещение"
+            <Column field="room" header="Помещение" autoLayout = {true}
                     style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -164,7 +154,7 @@ class Devices extends Component {
                                 return {label: index.name_room, value: index.id_room, name: index.name_room}
                             });
                                 return <div>
-                                    <Dropdown value={[this.props.selectRoomValue.label]} options={room_info}
+                                    <Dropdown value={[this.props.selectRoomValue.label]} options={room_info} filter={true}
                                               editable={true}
                                               id="update_room" style={{textAlign: 'center'}}
                                               className={'p-dropdown'}
@@ -188,7 +178,7 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="user_otv" header="Ответственный"
+            <Column field="user_otv" header="Ответственный" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
@@ -197,7 +187,7 @@ class Devices extends Component {
                                 return {label: index.fioUser, value: index.user_id, name: index.fioUser}
                             });
                             return <div>
-                                <Dropdown  value={[this.props.selectUserValue.label]} options={fioUserOtv} editable ={true}
+                                <Dropdown  value={[this.props.selectUserValue.label]} options={fioUserOtv} filter={true} editable ={true}
                                            id = "update_type_device"  style={{textAlign:'center'}}
                                            className={'p-dropdown'}
                                            onChange={(e)=>{
@@ -222,6 +212,39 @@ class Devices extends Component {
                             </div>
                         }
                     }}></Column>
+            <Column field="name_status" header="Статус" autoLayout = {true}
+                    style={{textAlign:'center'}} sortable={true} filter={true} filterPlaceholder={"Активна/Удалена"} filterField = {"Активна"} filterMatchMode="contains"
+                    body={(value) => {
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
+                        {
+                            const Status = this.props.status_action.map((index)=>{
+                                return {label: index.name_status, value: index.id_status, name: index.name_status}
+                            });
+                            return <div>
+                                <Dropdown value={[this.props.selectStatus.label]} options={Status} filter={true}  editable ={true} placeholder={"Активна"}
+                                           id = "update_is_status"  style={{textAlign:'center'}}
+                                           className={'p-dropdown'}
+                                           onChange={(e)=>{
+                                               let label;
+                                               let value;
+                                               let data = this.props.status_action;
+                                               for(let i = 0 ; i<= data.length; i++) {
+                                                   if (data[i].id_status === e.value) {
+                                                       label = data[i].name_status;
+                                                       value = data[i].id_status;
+                                                       break;
+                                                   }
+                                               }
+                                               this.props.StatusUpdateValue({label: label, value: value})
+                                           }}/>
+                            </div>
+                            }
+                        else{
+                                return <div>
+                                    {value.name_status}
+                                 </div>
+                        }
+                    }}></Column>
 
             <Column style={{width:'6%'}} field="id_devices" header="Действие" body={(value) => {
                 if(value.id_devices!==0){
@@ -238,7 +261,7 @@ class Devices extends Component {
                     <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                         if(this.props.updateVisible.visible === true){
                             const updateDevice = {
-                                id_devices: value.id_devices,
+                                id_devices: Number(value.id_devices),
                                 id_type_devices: this.props.selectDeviceValue.value,
                                 type_device: this.props.selectDeviceValue.label,
                                 id_user_otv: this.props.selectUserValue.value,
@@ -248,12 +271,14 @@ class Devices extends Component {
                                 inventar_number: document.getElementById("update_inventar_number").value,
                                 id_room: this.props.selectRoomValue.value,
                                 room: this.props.selectRoomValue.label,
-                                id_props_port: value.id_devices,
+                                id_props_port: Number(value.id_props_port),
                                 countOptPort: Number(document.getElementById("update_countOptPort").value),
-                                countEthernetPort: Number(document.getElementById("update_countEthernetPort").value)
+                                countEthernetPort: Number(document.getElementById("update_countEthernetPort").value),
+                                id_status: this.props.selectStatus.value,
+                                name_status: this.props.selectStatus.label
 
                             };
-                              this.props.updateDevice("http://localhost:8080/Devices/UpdateDevices/",value.id_devices, updateDevice)
+                              this.props.updateDevice("http://localhost:8080/Devices/UpdateDevices/", Number(value.id_devices), updateDevice)
                             this.props.visibleUpdate(false, null);
                         }
                         else {
@@ -261,6 +286,7 @@ class Devices extends Component {
                             this.props.TypeDeviceUpdateValue({value: value.id_type_devices, label: value.type_device});
                             this.props.UserOtvUpdateValue({value: value.id_user_otv, label: value.user_otv});
                             this.props.RoomUpdateValue({value: value.id_room, label: value.room});
+                            this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
                         }
                     }}></Button>
                 </div>
@@ -281,8 +307,9 @@ class Devices extends Component {
                                   room: this.props.selectRoomValue.label,
                                   id_props_port: 0,
                                   countOptPort: Number(document.getElementById("update_countOptPort").value),
-                                  countEthernetPort: Number(document.getElementById("update_countEthernetPort").value)
-
+                                  countEthernetPort: Number(document.getElementById("update_countEthernetPort").value),
+                                  id_status: this.props.selectStatus.value,
+                                  name_status: this.props.selectStatus.label
                               };
                              this.props.setDevice("http://localhost:8080/Devices/CreateDevices",createDevice);
                              this.props.visibleUpdate(false, null);
@@ -292,6 +319,7 @@ class Devices extends Component {
                             this.props.TypeDeviceUpdateValue({value: value.id_type_devices, label: value.type_device});
                             this.props.UserOtvUpdateValue({value: value.id_user_otv, label: value.user_otv});
                             this.props.RoomUpdateValue({value: value.id_room, label: value.room});
+                            this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
                         }
                     }}></Button>
             }}}></Column>
@@ -301,7 +329,6 @@ class Devices extends Component {
     render() {
         return (
             <div><PageFooter/>
-                <Menubar model={this.items} />
                 <Panel header="Оборудование организации" >
                     {this.table_devices(this)}
                 </Panel>
@@ -321,7 +348,9 @@ const  mapStateToProps  = state => {
         selectDeviceValue: state.device_reduser.selectDeviceValue,
         selectUserValue: state.user_reduser.selectUserValue,
         room_info: state.room_reduser.room_info,
-        selectRoomValue: state.room_reduser.selectRoomValue
+        selectRoomValue: state.room_reduser.selectRoomValue,
+        selectStatus: state.status_reduser.selectStatus,
+        status_action: state.status_reduser.status_action
     };
 };
 const  mapDispatchToProps = dispatch =>{
@@ -329,12 +358,13 @@ const  mapDispatchToProps = dispatch =>{
         fetchAllDevice: url => dispatch(getAllDevice("all",url)),
         deleteDevice: (url, data)  => dispatch(deleteDevice("all",url,data)),
         setDevice: (url, data) => dispatch(setDevice("all",url, data)),
-        updateDevice: (url, user_id, data) => dispatch(updateDevice("all",url, user_id, data)),
+        updateDevice: (url, id, data) => dispatch(updateDevice("all",url, id, data)),
         visible: status => dispatch(setStatusShowDialog("showDialog",status)),
         visibleUpdate: (status,id) => dispatch(setStatusShowDialog("updateVisible",status,id)),
         TypeDeviceUpdateValue: (data) => dispatch(getDeviceSelect("selectDeviceValue", data)),
         UserOtvUpdateValue: (data) => dispatch(getUserSelect("selectUserValue", data)),
-        RoomUpdateValue: (data) => dispatch(getRoomSelect("selectRoomValue", data))
+        RoomUpdateValue: (data) => dispatch(getRoomSelect("selectRoomValue", data)),
+        StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data))
     };
 };
 

@@ -11,7 +11,9 @@ const startDevice = {
     mac_address: "",
     room: "",
     type_device: "",
-    user_otv: ""
+    user_otv: "",
+    id_status: "",
+    name_status: ""
 };
 
 export function getDeviceSuccess(type, device_info){
@@ -35,8 +37,6 @@ export function getDeviceSelect(type, data){
         default: return [];
     }
 }
-
-
 export function getAllDevice(type,url){
     return (dispatch) =>{
         fetch(url)

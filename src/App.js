@@ -20,8 +20,17 @@ import Topologi from './componets/renderPage/topolog_page/Topologi.js';
 
 import { BrowserRouter as Router, Route,Switch} from "react-router-dom";
 import {connect} from "react-redux";
+import {getRefStatus} from "./controllers/status_controller";
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    componentDidMount() {
+        this.props.RefStatus("http://localhost:8080/Status/StatusAll");
+    }
+
     render() {
     return (
       <Router>
@@ -54,4 +63,9 @@ const  mapStateToProps  = state => {
     user_inf: state.user_info
   };
 };
-export default connect(mapStateToProps,null)(App);
+const  mapDispatchToProps = dispatch =>{
+    return {
+        RefStatus: url => dispatch(getRefStatus("all",url))
+    };
+};
+export default connect(mapStateToProps,mapDispatchToProps)(App);
