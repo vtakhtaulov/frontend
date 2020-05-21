@@ -6,3 +6,12 @@ export function getRoom (state = [], action) {
             return state;
     }
 }
+
+export function selectRoomValue (state = [], action) {
+    switch(action.type) {
+        case "selectRoomValue":
+            return action.selectRoomValue;
+        default:
+            return state;
+    }
+}

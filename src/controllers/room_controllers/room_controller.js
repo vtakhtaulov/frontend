@@ -8,6 +8,16 @@ export function getRoomSuccess(type, room_info){
         default: return [];
     }
 }
+export function getRoomSelect(type, data){
+    switch (type) {
+        case "selectRoomValue":
+            return {
+                type: "selectRoomValue",
+                selectRoomValue: data
+            };
+        default: return [];
+    }
+}
 
 export function getAllRoom(type, url){
     return (dispatch) =>{

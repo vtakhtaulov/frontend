@@ -31,7 +31,6 @@ const root_reduser = combineReducers({
    networkJournal_reduser: networkJournal_reduser,
    network_reduser: network_reduser,
    action_visible: action_user_reduser
-
 })
 
 export default root_reduser;

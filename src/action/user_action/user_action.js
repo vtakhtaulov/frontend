@@ -16,3 +16,12 @@ export function user_allusers(state = [], action) {
             return state;
     }
 }
+
+export function selectUserValue (state = [], action) {
+    switch(action.type) {
+        case "selectUserValue":
+            return action.selectUserValue;
+        default:
+            return state;
+    }
+}

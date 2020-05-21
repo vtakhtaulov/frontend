@@ -6,3 +6,11 @@ export function getAllDevice (state = [], action) {
             return state;
     }
 }
+export function selectDeviceValue (state = [], action) {
+    switch(action.type) {
+        case "selectDeviceValue":
+            return action.selectDeviceValue;
+        default:
+            return state;
+}
+}

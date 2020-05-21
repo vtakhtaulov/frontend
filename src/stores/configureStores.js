@@ -12,10 +12,16 @@ let saver = store => next => action => {
     return result
 }
 
-//const lastStorage = store => localStorage['RootStore'] = JSON.stringify(store.getState());
-let middleware = applyMiddleware(logger, thunk, saver);
-let container = JSON.parse(localStorage['RootStore']);
 
+let middleware = applyMiddleware(logger, thunk, saver);
+const store =() => {
+    try {
+        return JSON.parse(localStorage['RootStore']);
+    } catch (err) {
+        return undefined;
+    }
+};
+let container = store();
 
 let configStor  = composeWithDevTools(middleware)(createStore)
             (root_reduser,

@@ -1,11 +1,12 @@
 const initialState = {
-    visible: false
+    visible: false,
+    id: null
 }
 
 export function getActionUsers(state = initialState, action) {
     switch(action.type) {
         case "showDialog":
-            return action.visible;
+            return action.info;
         default:
             return state;
     }
@@ -13,7 +14,15 @@ export function getActionUsers(state = initialState, action) {
 export function getDeleteActionUsers(state = initialState, action) {
     switch(action.type) {
         case "deleteDialog":
-            return action.visible;
+            return action.info;
+        default:
+            return state;
+    }
+}
+export function getUpdateActionUsers(state = initialState, action) {
+    switch(action.type) {
+        case "updateVisible":
+            return action.info;
         default:
             return state;
     }

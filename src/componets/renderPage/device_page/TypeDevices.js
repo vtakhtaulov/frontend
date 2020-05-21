@@ -13,25 +13,13 @@ import {getAllTypeDevice} from "../../../controllers/device_controllers/type_dev
 class TypeDevices extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
         this.items = [
             {
                 label: 'Добавить',
                 icon: 'pi pi-fw pi-plus',
                 command: () => { this.showSaveDialog()}
-            },
-            {
-                label: 'Изменить',
-                icon: 'pi pi-fw pi-pencil',
-                command: () => { alert('Сохранено!') }
-            },
-            {
-                label: 'Удалить',
-                icon: 'pi pi-fw pi-trash',
-                command: () => { alert('Удалено!') }
             }
         ];
-        this.typeDevice_table = this.typeDevice_table(this);
     }
 
     componentDidMount() {
@@ -51,7 +39,7 @@ class TypeDevices extends Component {
             <div><PageFooter/>
                 <Menubar model={this.items} />
                 <Panel header="Справочник типов устройств">
-                    {this.typeDevice_table}
+                    {this.typeDevice_table(this)}
                 </Panel>
             </div>
         );

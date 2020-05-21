@@ -14,6 +14,16 @@ export function getUserSuccess(type, user_info){
     }
 
 }
+export function getUserSelect(type, data){
+    switch (type) {
+        case "selectUserValue":
+            return {
+                type: "selectUserValue",
+                selectUserValue: data
+            };
+        default: return [];
+    }
+}
 
  export function getUser(type,url) {
      return async (dispatch) => {
@@ -48,17 +58,40 @@ export function setUser(type, url, data) {
                 return response;
             })
             .then(response => response.json())
+            .then(user_info => {
+                return dispatch(getUserSuccess(type, user_info));
+            })
+    }
+}
+
+export function deleteUser(type, url, data) {
+    return (dispatch) => {
+        fetch(url + data, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
             .then(user_info => dispatch(
                 getUserSuccess(type, user_info))
             )
     }
 }
 
-export function deleteUser(type, url, data) {
+export function updateUser(type, url, id,data) {
     return (dispatch) => {
-        fetch(url+data, {
+        fetch(url+id, {
             credentials: "same-origin", //передаем сессионные данные
-            method: 'DELETE'
+            method: 'PUT',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
             .then(response => {
                 if (response.status !== 200) {
