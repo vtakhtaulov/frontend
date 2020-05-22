@@ -8,6 +8,16 @@ export function getNodesSuccess(type, nodes_info){
         default: return [];
     }
 }
+export function getNodesSelect(type, data){
+    switch (type) {
+        case "selectNodesValue":
+            return {
+                type: "selectNodesValue",
+                selectNodesValue: data
+            };
+        default: return [];
+    }
+}
 
 export function getAllNodes(type, url){
     return (dispatch) =>{

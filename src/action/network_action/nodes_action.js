@@ -6,3 +6,11 @@ export function getNodes (state = [], action) {
             return state;
     }
 }
+export function selectNodesValue (state = [], action) {
+    switch(action.type) {
+        case "selectNodesValue":
+            return action.selectNodesValue;
+        default:
+            return state;
+    }
+}
