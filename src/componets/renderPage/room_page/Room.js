@@ -147,7 +147,7 @@ class Rooms extends Component {
                                     id_nodes: Number(this.props.selectNodesValue.value),
                                     name_nodes: this.props.selectNodesValue.label
                                 };
-                                console.log(updateRoom);
+                                console.log(JSON.stringify(updateRoom));
                                 this.props.updateRoom("http://localhost:8080/Room/UpdateRoom/", Number(value.id_room), updateRoom)
                                 this.props.visibleUpdate(false, null);
                             }
