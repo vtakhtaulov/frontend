@@ -37,6 +37,17 @@ export function getDeviceSelect(type, data){
         default: return [];
     }
 }
+export function getDeviceLastSelect(type, data){
+    switch (type) {
+        case "selectDeviceLastValue":
+            return {
+                type: "selectDeviceLastValue",
+                selectDeviceLastValue: data
+            };
+        default: return [];
+    }
+}
+
 export function getAllDevice(type,url){
     return (dispatch) =>{
         fetch(url)

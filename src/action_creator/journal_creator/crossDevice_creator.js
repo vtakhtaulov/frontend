@@ -2,6 +2,28 @@
 export function getCrossDeviceSuccess(type, cross_device_info){
     switch (type) {
         case "all":
+            cross_device_info.push({
+                Id_crossdevices: -1,
+                id_devices_first: 0,
+                host_name_start: "",
+                id_devices_end: 0,
+                host_name_end: "",
+                id_user_otv: 0,
+                user_otv: "",
+                id_user_old: 0,
+                user_old: "",
+                id_network_journal: 0,
+                ip_address_network: "",
+                description: "",
+                date_reg: "",
+                date_old: "",
+                id_vlan: 0,
+                name_vlan: "",
+                id_crosses: 0,
+                info_crosses: "",
+                id_status: 0,
+                name_status: ""
+            });
             return {
                 type: "get_all_cross_device_success",
                 cross_device_info: cross_device_info

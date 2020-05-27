@@ -14,3 +14,12 @@ export function selectDeviceValue (state = [], action) {
             return state;
     }
 }
+
+export function selectDeviceLastValue (state = [], action) {
+    switch(action.type) {
+        case "selectDeviceLastValue":
+            return action.selectDeviceLastValue;
+        default:
+            return state;
+    }
+}
