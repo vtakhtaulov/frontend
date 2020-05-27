@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
 import {connect} from "react-redux";
-import {getAllVlan} from "../../../controllers/network_controllers/vlan_controller";
+import {getAllVlan} from "../../../action_creator/network_creator/vlan_creator";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {Menubar} from "primereact/menubar";

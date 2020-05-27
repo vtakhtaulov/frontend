@@ -7,10 +7,10 @@ import {connect} from "react-redux";
 import {
     getAllTypeDevice,
     setTypeDevice, updateTypeDevice
-} from "../../../controllers/device_controllers/type_device_controller";
+} from "../../../action_creator/device_creator/type_device_creator";
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
-import {setStatusShowDialog} from "../../../controllers/action_users_controller";
+import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 
 class TypeDevices extends Component {
     constructor(props) {

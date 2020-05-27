@@ -6,3 +6,12 @@ export function getCross_device (state = [], action) {
             return state;
     }
 }
+
+export function selectCross_device (state = [], action) {
+    switch(action.type) {
+        case "selectCross_deviceValue":
+            return action.selectCross_deviceValue;
+        default:
+            return state;
+    }
+}

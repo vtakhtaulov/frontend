@@ -12,5 +12,5 @@ export function selectDeviceValue (state = [], action) {
             return action.selectDeviceValue;
         default:
             return state;
-}
+    }
 }

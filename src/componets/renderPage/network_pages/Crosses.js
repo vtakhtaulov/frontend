@@ -10,7 +10,7 @@ import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
 import {connect} from "react-redux";
-import {getAllCrosses} from "../../../controllers/network_controllers/crosses_controller";
+import {getAllCrosses} from "../../../action_creator/network_creator/crosses_creator";
 
 class Crosses extends Component {
     constructor(props) {

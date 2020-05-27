@@ -1,49 +1,35 @@
-export function getUserSuccess(type, user_info){
+
+export function getCrossDeviceSuccess(type, cross_device_info){
     switch (type) {
-        case "auth":
-            return {
-                type: "get_user_auth_success",
-                user_auth_info: user_info
-            };
         case "all":
             return {
-                type: "get_all_user_success",
-                user_info: user_info
+                type: "get_all_cross_device_success",
+                cross_device_info: cross_device_info
             };
         default: return [];
     }
 
 }
-export function getUserSelect(type, data){
-    switch (type) {
-        case "selectUserValue":
-            return {
-                type: "selectUserValue",
-                selectUserValue: data
-            };
-        default: return [];
+
+export function getAllCrossDevice(type,url){
+    return (dispatch) =>{
+        fetch(url)
+            .then(response =>{
+                if(response.status!==200){
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(cross_device_info => dispatch(
+                getCrossDeviceSuccess(type,cross_device_info))
+            )
     }
 }
 
- export function getUser(type,url) {
-     return async (dispatch) => {
-         await fetch(url)
-             .then(response => {
-                 if (response.status !== 200) {
-                     throw new Error(response.statusText)
-                 }
-                 return response;
-             })
-             .then(response => response.json())
-             .then(user_info => dispatch(
-                 getUserSuccess(type, user_info))
-             )
-     }
- }
-
-export function setUser(type, url, data) {
+export function setCrossDevice(type, url, data) {
     return (dispatch) => {
-         fetch(url, {
+        fetch(url, {
             credentials: "same-origin", //передаем сессионные данные
             method: 'POST',
             body: JSON.stringify(data),
@@ -58,13 +44,13 @@ export function setUser(type, url, data) {
                 return response;
             })
             .then(response => response.json())
-            .then(user_info => {
-                return dispatch(getUserSuccess(type, user_info));
+            .then(cross_device_info => {
+                return dispatch(getCrossDeviceSuccess(type, cross_device_info));
             })
     }
 }
 
-export function deleteUser(type, url, data) {
+export function deleteCrossDevice(type, url, data) {
     return (dispatch) => {
         fetch(url + data, {
             credentials: "same-origin", //передаем сессионные данные
@@ -77,13 +63,13 @@ export function deleteUser(type, url, data) {
                 return response;
             })
             .then(response => response.json())
-            .then(user_info => dispatch(
-                getUserSuccess(type, user_info))
+            .then(cross_device_info => dispatch(
+                getCrossDeviceSuccess(type,  cross_device_info))
             )
     }
 }
 
-export function updateUser(type, url, id,data) {
+export function updateCrossDevice(type, url, id,data) {
     return (dispatch) => {
         fetch(url+id, {
             credentials: "same-origin", //передаем сессионные данные
@@ -100,8 +86,8 @@ export function updateUser(type, url, id,data) {
                 return response;
             })
             .then(response => response.json())
-            .then(user_info => dispatch(
-                getUserSuccess(type, user_info))
+            .then(cross_device_info => dispatch(
+                getCrossDeviceSuccess(type, cross_device_info))
             )
     }
 }

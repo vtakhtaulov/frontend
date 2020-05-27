@@ -25,3 +25,12 @@ export function selectUserValue (state = [], action) {
             return state;
     }
 }
+
+export function selectOldUserValue (state = [], action) {
+    switch(action.type) {
+        case "selectOldUserValue":
+            return action.selectOldUserValue;
+        default:
+            return state;
+    }
+}

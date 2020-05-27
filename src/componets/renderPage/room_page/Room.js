@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
 import {connect} from "react-redux";
-import {deleteRoom, getAllRoom, setRoom, updateRoom} from "../../../controllers/room_controllers/room_controller";
+import {deleteRoom, getAllRoom, setRoom, updateRoom} from "../../../action_creator/room_creator/room_creator";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {Dropdown} from "primereact/dropdown";
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
-import {getUserSelect} from "../../../controllers/user_controllers/user_controller";
-import {getNodesSelect} from "../../../controllers/network_controllers/nodes_controller";
-import {setStatusShowDialog} from "../../../controllers/action_users_controller";
+import {getUserSelect} from "../../../action_creator/user_creator/user_creator";
+import {getNodesSelect} from "../../../action_creator/network_creator/nodes_creator";
+import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 
 class Rooms extends Component {
     constructor(props) {
@@ -127,15 +127,6 @@ class Rooms extends Component {
             <Column style={{width:'6%'}} field="id_room" header="Действие" body={(value) => {
                 if(value.id_room!==-1){
                     return <div>
-                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
-                            if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                                this.props.deleteRoom("http://localhost:8080/Room/DeleteRoom/", value.id_room);
-                            }
-                            else{
-                            }
-                        }}>
-                        </Button>
-                        <span> </span>
                         <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                             if(this.props.updateVisible.visible === true){
                                 const updateRoom = {
@@ -156,7 +147,15 @@ class Rooms extends Component {
                                 this.props.NodesUpdateValue({value: value.id_nodes, label: value.name_nodes});
                                 this.props.UserOtvUpdateValue({value: value.id_user_otv, label: value.user_otv});
                             }
-                        }}></Button>
+                        }}></Button> <span> </span>
+                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
+                            if(window.confirm("Вы уверены, что хотите удалить запись?")){
+                                this.props.deleteRoom("http://localhost:8080/Room/DeleteRoom/", value.id_room);
+                            }
+                            else{
+                            }
+                        }}>
+                        </Button>
                     </div>
                 }
                 else {

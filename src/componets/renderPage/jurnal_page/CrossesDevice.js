@@ -5,7 +5,7 @@ import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {connect} from "react-redux";
-import {getAllCrossDevice} from "../../../controllers/journal_controllers/crossDevice_controller";
+import {getAllCrossDevice} from "../../../action_creator/journal_creator/crossDevice_creator";
 
 class CrossesDevice extends Component {
     constructor(props) {

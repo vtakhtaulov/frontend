@@ -9,7 +9,7 @@ import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import {connect} from "react-redux";
-import {getAllDHCP} from "../../../controllers/network_controllers/DHCP_controller";
+import {getAllDHCP} from "../../../action_creator/network_creator/DHCP_creator";
 
 
 class DHCP extends Component {

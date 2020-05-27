@@ -6,7 +6,7 @@ import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {connect} from "react-redux";
-import {getAllNetworkJournal} from "../../../controllers/journal_controllers/networkJoural_controller";
+import {getAllNetworkJournal} from "../../../action_creator/journal_creator/networkJoural_creator";
 
 class NetworkJournal extends Component {
     constructor(props) {

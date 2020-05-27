@@ -6,3 +6,12 @@ export function getCrosses (state = [], action) {
             return state;
     }
 }
+
+export function selectCrosses (state = [], action) {
+    switch(action.type) {
+        case "selectCrossesValue":
+            return action.selectCrossesValue;
+        default:
+            return state;
+    }
+}

@@ -9,9 +9,9 @@ import PageFooter from '../../footer/PageFooter';
 
 
 import {connect} from "react-redux";
-import {deleteUser, getUser, setUser, updateUser} from "../../../controllers/user_controllers/user_controller";
+import {deleteUser, getUser, setUser, updateUser} from "../../../action_creator/user_creator/user_creator";
 import {Button} from "primereact/button";
-import {setStatusShowDialog} from "../../../controllers/action_users_controller";
+import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 
 class Users extends Component {
     constructor(props) {
@@ -33,42 +33,6 @@ class Users extends Component {
 
     tableUsers(){
         return <DataTable value= {this.props.user_info} responsive={true} scrollable={true}>
-            <Column style={{width:'6%'}} field="user_id" header="Действие" body={(value) => {
-                return <div>
-                    <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
-                            if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                            this.props.deleteUser("http://localhost:8080/User/DeleteUser/", value.user_id);
-                        }
-                        else{
-                        }
-                    }}>
-                    </Button>
-                    <span> </span>
-                    <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
-                        if(this.props.updateVisible.visible === true){
-                            const lastUser = {
-                                user_id: value.user_id,
-                                user_login: document.getElementById("update_user_login").value,
-                                user_password: document.getElementById("update_user_password").value,
-                                last_name: document.getElementById("update_last_name").value,
-                                first_name: document.getElementById("update_first_name").value,
-                                middle_name: document.getElementById("update_middle_name").value,
-                                email: document.getElementById("update_email").value,
-                                phone: document.getElementById("update_phone").value,
-                                user_role: document.getElementById("update_user_role").value
-                            };
-                            this.props.updateUser("http://localhost:8080/User/UpdateUser/",value.user_id,lastUser)
-                            this.props.visibleUpdate(false, null);
-                        }
-                        else {
-                            this.props.visibleUpdate(true, value.user_id);
-                            console.log(value);
-                        }
-
-                    }}></Button>
-                </div>
-            }}
-            ></Column>
             <Column field="last_name" header="Фамилия"
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
@@ -183,6 +147,42 @@ class Users extends Component {
                             </div>
                         }
                     }}></Column>
+
+            <Column style={{width:'6%'}} field="user_id" header="Действие" body={(value) => {
+                return <div>
+                    <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
+                        if(this.props.updateVisible.visible === true){
+                            const lastUser = {
+                                user_id: value.user_id,
+                                user_login: document.getElementById("update_user_login").value,
+                                user_password: document.getElementById("update_user_password").value,
+                                last_name: document.getElementById("update_last_name").value,
+                                first_name: document.getElementById("update_first_name").value,
+                                middle_name: document.getElementById("update_middle_name").value,
+                                email: document.getElementById("update_email").value,
+                                phone: document.getElementById("update_phone").value,
+                                user_role: document.getElementById("update_user_role").value
+                            };
+                            this.props.updateUser("http://localhost:8080/User/UpdateUser/",value.user_id,lastUser)
+                            this.props.visibleUpdate(false, null);
+                        }
+                        else {
+                            this.props.visibleUpdate(true, value.user_id);
+                            console.log(value);
+                        }
+
+                    }}></Button>  <span> </span>
+                    <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
+                        if(window.confirm("Вы уверены, что хотите удалить запись?")){
+                            this.props.deleteUser("http://localhost:8080/User/DeleteUser/", value.user_id);
+                        }
+                        else{
+                        }
+                    }}>
+                    </Button>
+                </div>
+            }}
+            ></Column>
         </DataTable>
     }
 

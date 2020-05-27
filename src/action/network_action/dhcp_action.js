@@ -6,3 +6,12 @@ export function getDhcp(state = [], action) {
             return state;
     }
 }
+
+export function selectDhcp (state = [], action) {
+    switch(action.type) {
+        case "selectDhcpValue":
+            return action.selectDhcpValue;
+        default:
+            return state;
+    }
+}

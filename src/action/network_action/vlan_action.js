@@ -6,3 +6,12 @@ export function getVlan (state = [], action) {
             return state;
     }
 }
+
+export function selectVlan (state = [], action) {
+    switch(action.type) {
+        case "selectVlanValue":
+            return action.selectVlanValue;
+        default:
+            return state;
+    }
+}

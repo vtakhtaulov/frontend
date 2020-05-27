@@ -6,3 +6,12 @@ export function network_pool(state = [], action){
             return state;
     }
 }
+
+export function selectNetwork_pool (state = [], action) {
+    switch(action.type) {
+        case "selectNetwork_poolValue":
+            return action.selectNetwork_poolValue;
+        default:
+            return state;
+    }
+}

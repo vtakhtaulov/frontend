@@ -5,7 +5,7 @@ import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {connect} from "react-redux";
-import {getAllNetwork} from "../../../controllers/network_controllers/network_controller";
+import {getAllNetwork} from "../../../action_creator/network_creator/network_creator";
 
 class Network extends Component {
     constructor(props) {

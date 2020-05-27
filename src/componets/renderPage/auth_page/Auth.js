@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Auth.css';
-import {getUser} from "../../../controllers/user_controllers/user_controller";
+import {getUser} from "../../../action_creator/user_creator/user_creator";
 import {connect} from "react-redux";
 
 class FormAuth extends Component{

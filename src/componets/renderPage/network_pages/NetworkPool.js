@@ -9,7 +9,7 @@ import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import {connect} from "react-redux";
-import {getAllNetworkPool} from "../../../controllers/network_controllers/network_pool_controller";
+import {getAllNetworkPool} from "../../../action_creator/network_creator/network_pool_creator";
 
 class NetworkPool extends Component {
     constructor(props) {

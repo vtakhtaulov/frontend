@@ -9,14 +9,14 @@ import {
     getAllDevice, getDeviceSelect,
     setDevice,
     updateDevice
-} from "../../../controllers/device_controllers/device_controller";
+} from "../../../action_creator/device_creator/device_creator";
 import {Button} from "primereact/button";
-import {setStatusShowDialog} from "../../../controllers/action_users_controller";
+import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 import {InputText} from "primereact/inputtext";
 import {Dropdown} from "primereact/dropdown";
-import {getUserSelect} from "../../../controllers/user_controllers/user_controller";
-import {getRoomSelect} from "../../../controllers/room_controllers/room_controller";
-import {getStatusSelect} from "../../../controllers/status_controller";
+import {getUserSelect} from "../../../action_creator/user_creator/user_creator";
+import {getRoomSelect} from "../../../action_creator/room_creator/room_creator";
+import {getStatusSelect} from "../../../action_creator/status_creator";
 
 class Devices extends Component {
     constructor(props) {
@@ -249,15 +249,6 @@ class Devices extends Component {
             <Column style={{width:'6%'}} field="id_devices" header="Действие" body={(value) => {
                 if(value.id_devices!==0){
                 return <div>
-                    <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
-                        if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                            this.props.deleteDevice("http://localhost:8080/Devices/DeleteDevices/", value.id_devices);
-                        }
-                        else{
-                        }
-                    }}>
-                    </Button>
-                    <span> </span>
                     <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                         if(this.props.updateVisible.visible === true){
                             const updateDevice = {
@@ -289,6 +280,15 @@ class Devices extends Component {
                             this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
                         }
                     }}></Button>
+                    <span> </span>
+                    <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
+                        if(window.confirm("Вы уверены, что хотите удалить запись?")){
+                            this.props.deleteDevice("http://localhost:8080/Devices/DeleteDevices/", value.id_devices);
+                        }
+                        else{
+                        }
+                    }}>
+                    </Button>
                 </div>
             }
             else {
@@ -322,7 +322,8 @@ class Devices extends Component {
                             this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
                         }
                     }}></Button>
-            }}}></Column>
+            }}} >
+            </Column>
         </DataTable>
     }
 

@@ -6,3 +6,12 @@ export function all_network(state = [], action){
             return state;
     }
 }
+
+export function selectNetwork (state = [], action) {
+    switch(action.type) {
+        case "selectNetworkValue":
+            return action.selectNetworkValue;
+        default:
+            return state;
+    }
+}

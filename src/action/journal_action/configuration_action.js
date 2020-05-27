@@ -6,3 +6,12 @@ export function getConfiguration (state = [], action) {
             return state;
     }
 }
+
+export function selectConfiguration (state = [], action) {
+    switch(action.type) {
+        case "selectConfigurationValue":
+            return action.selectConfigurationValue;
+        default:
+            return state;
+    }
+}

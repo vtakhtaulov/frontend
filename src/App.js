@@ -20,7 +20,7 @@ import Topologi from './componets/renderPage/topolog_page/Topologi.js';
 
 import { BrowserRouter as Router, Route,Switch} from "react-router-dom";
 import {connect} from "react-redux";
-import {getRefStatus} from "./controllers/status_controller";
+import {getRefStatus} from "./action_creator/status_creator";
 
 class App extends Component {
     constructor(props) {
