@@ -1,4 +1,3 @@
-import {getDeviceSuccess} from "../device_creator/device_creator";
 
 export function getPoolSuccess(type, pool_info){
     switch (type) {
@@ -10,6 +9,17 @@ export function getPoolSuccess(type, pool_info){
         default: return [];
     }
 
+}
+
+export function getPoolSelect(type, data){
+    switch (type) {
+        case "selectPoolValue":
+            return {
+                type: "selectPoolValue",
+                selectPoolValue: data
+            };
+        default: return [];
+    }
 }
 
 export function getAllPool(type, url){

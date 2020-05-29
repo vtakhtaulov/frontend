@@ -2,6 +2,15 @@
 export function getCrossSuccess(type, crosses_info){
     switch (type) {
         case "all":
+            crosses_info.push({
+                id_crosses: null,
+                id_crosses_end: null,
+                id_crosses_first: null,
+                infoCrosses: null,
+                port: null,
+                shkaf: null,
+                slot: null
+            });
             return {
                 type: "get_all_crosses_success",
                 crosses_info: crosses_info

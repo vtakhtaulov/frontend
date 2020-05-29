@@ -109,7 +109,7 @@ class CrossesDevice extends Component {
 
                                                //this.props.UpdateSelectNetworkJournal({label: labelNJ, value: valueNJ});
                                                //console.log(dataNJ[0].id_devices);
-                                               //this.props.LastDeviceUpdateValue({label: label, value: value})
+                                               this.props.LastDeviceUpdateValue({label: label, value: value})
                                            }}
                                 />
                             </div>
@@ -327,6 +327,7 @@ class CrossesDevice extends Component {
                                 };
                                 //this.props.updateCrossDevice("http://localhost:8080/CrossDevices/UpdateCrossDevices/", Number(value.id_crossdevices), updateCorossDev);
                                 this.props.visibleUpdate(false, null);
+                                console.log(updateCorossDev);
                             }
                             else {
                                 this.props.visibleUpdate(true, value.id_crossdevices);
@@ -364,7 +365,7 @@ class CrossesDevice extends Component {
                                     name_status: value.name_status
                                 };
 
-                                //this.props.updateCrossDevice("http://localhost:8080/CrossDevices/DeleteCrossDevices/", value.id_crossdevices, deleteCorossDev);
+                                this.props.updateCrossDevice("http://localhost:8080/CrossDevices/DeleteCrossDevices/", value.id_crossdevices, deleteCorossDev);
                             }
                             else{
                             }

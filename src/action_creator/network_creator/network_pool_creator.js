@@ -9,6 +9,18 @@ export function getNetworkPoll(type, network_pool){
         default: return [];
     }
 }
+
+export function getNetworkPoolSelect(type, data){
+    switch (type) {
+        case "selectNetwork_poolValue":
+            return {
+                type: "selectNetwork_poolValue",
+                selectNetwork_poolValue: data
+            };
+        default: return [];
+    }
+}
+
 export function getAllNetworkPool (type, url){
     return (dispatch) =>{
         fetch(url)
