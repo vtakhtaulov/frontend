@@ -7,10 +7,10 @@ export function getCrosses (state = [], action) {
     }
 }
 
-export function selectCrosses (state = [], action) {
+export  function selectCrosses (state = [], action) {
     switch(action.type) {
         case "selectCrossesValue":
-            return action.selectCrossesValue;
+            return  action.selectCrossesValue;
         default:
             return state;
     }

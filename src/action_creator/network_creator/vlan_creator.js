@@ -9,6 +9,16 @@ export function getVlanSuccess(type, vlan_info){
         default: return [];
     }
 }
+export function getVlanSelect(type, data){
+    switch (type) {
+        case "selectVlanValue":
+            return {
+                type: "selectVlanValue",
+                selectVlanValue: data
+            };
+        default: return [];
+    }
+}
 
 export function getAllVlan(type, url){
     return (dispatch) =>{

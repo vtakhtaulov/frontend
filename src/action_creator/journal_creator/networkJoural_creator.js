@@ -10,7 +10,17 @@ export function getNetworkJournalSuccess(type, network_journal_info){
     }
 
 }
-
+export async function setSelectNetworkJournal (state = [], action) {
+    switch(action.type) {
+        case "selectNetwork_JournalValue":
+            return {
+                type: "selectNetwork_JournalValue",
+                selectNetwork_JournalValue: action.selectNetwork_JournalValue
+            }
+        default:
+            return state;
+    }
+}
 export function getAllNetworkJournal(type,url){
     return (dispatch) =>{
         fetch(url)

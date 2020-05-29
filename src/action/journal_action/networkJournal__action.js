@@ -8,7 +8,7 @@ export function getNetwork_Journal (state = [], action) {
 }
 
 export function selectNetwork_Journal (state = [], action) {
-    switch(action.type) {
+     switch(action.type) {
         case "selectNetwork_JournalValue":
             return action.selectNetwork_JournalValue;
         default:

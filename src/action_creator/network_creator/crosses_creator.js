@@ -10,6 +10,16 @@ export function getCrossSuccess(type, crosses_info){
     }
 
 }
+export function getCrossSelect(type, data){
+    switch (type) {
+        case "selectCrossesValue":
+            return {
+                type: "selectCrossesValue",
+                selectCrossesValue: data
+            };
+        default: return [];
+    }
+}
 
 export function getAllCrosses(type, url){
     return (dispatch) =>{
