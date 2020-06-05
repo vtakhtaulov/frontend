@@ -23,6 +23,16 @@ export function getAllNetwork(type, url){
     }
 }
 
+export function getNetworkSelect(type, data){
+    switch (type) {
+        case "selectNetworkValue":
+            return {
+                type: "selectNetworkValue",
+                selectNetworkValue: data
+            };
+        default: return [];
+    }
+}
 
 export function setNetwork(type, url, data) {
     return (dispatch) => {

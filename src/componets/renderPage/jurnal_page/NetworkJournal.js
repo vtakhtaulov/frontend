@@ -6,12 +6,18 @@ import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {connect} from "react-redux";
-import {getAllNetworkJournal} from "../../../action_creator/journal_creator/networkJoural_creator";
+import {
+    getAllNetworkJournal,
+    setNetworkJournal,
+    updateNetworkJournal
+} from "../../../action_creator/journal_creator/networkJoural_creator";
 import {Button} from "primereact/button";
 import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 import {addNewLine} from "../../../action_creator/journal_creator/configuration_creator";
 import {Dropdown} from "primereact/dropdown";
-import {getDeviceSelect} from "../../../action_creator/device_creator/device_creator";
+import {getAllDevice, getDeviceSelect} from "../../../action_creator/device_creator/device_creator";
+import {InputText} from "primereact/inputtext";
+import {getAllNetwork, getNetworkSelect} from "../../../action_creator/network_creator/network_creator";
 
 class NetworkJournal extends Component {
     constructor(props) {
@@ -21,20 +27,88 @@ class NetworkJournal extends Component {
 
     componentDidMount() {
         this.props.fetchAllNetworkJournal("http://localhost:8080/NetworkJournal/NetworkJournalAll");
+        this.props.visibleUpdate(false, null);
+        if(this.props.device_info.length === 0){
+            this.props.fetchAllDevice("http://localhost:8080/Devices/DevicesAll");
+        }
+        if(this.props.all_network.length === 0){
+            this.props.fetchAllNetwork("http://localhost:8080/Network/NetworkAll");
+        }
     }
 
     networkJournal_table(){
         return <DataTable value={this.props.network_journal_info} responsive={true} scrollable={true}>
-            <Column field="network" header="Сеть" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
-            <Column field="ip_address" header="ip-адресс" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
-            <Column field="DNS_zone" header="DNS зона" style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"></Column>
+
+            <Column field="network" header="Сеть" autoLayout = {true}
+                    style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
+                    body={(value) => {
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network_journal)
+                        {
+                            const network_info = this.props.all_network.map((index)=>{
+                                return {label: (index.ip_address_network  +"/" + index.networkMask) , value: index.id_network, name: (index.ip_address_network  +"/" + index.networkMask) }
+                            });
+                            return <div>
+                                <Dropdown  value={[this.props.selectNetwork.label]} options={network_info} editable ={true}
+                                           id = "update_network"  style={{textAlign:'center'}} filter={true}
+                                           className={'p-dropdown'}
+                                           onChange={(e)=>{
+                                               let label;
+                                               let value;
+                                               let data = this.props.all_network;
+                                               for(let i = 0 ; i<= data.length; i++) {
+                                                   if (data[i].id_network === e.value) {
+                                                       label = (data[i].ip_address_network +"/" + data[i].networkMask);
+                                                       value = data[i].id_network;
+                                                       break;
+                                                   }
+                                               }
+                                               this.props.NetworkUpdateValue({label: label, value: value})
+                                           }}
+                                />
+                            </div>
+                        }
+                        else{
+                            return <div>
+                                {value.network}
+                            </div>
+                        }
+                    }}
+                   ></Column>
+
+
+            <Column field="ip_address" header="IP-адресс" autoLayout = {true}
+                    style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
+                    body={(value) => {
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network_journal)
+                        {
+                            return <InputText id = "update_ip_address" defaultValue={value.ip_address}></InputText>
+                        }
+                        else {
+                            return <div>
+                                {value.ip_address}
+                            </div>
+                        }
+                    }}></Column>
+
+            <Column field="DNS_zone" header="DNS зона" autoLayout = {true}
+                    style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
+                    body={(value) => {
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network_journal)
+                        {
+                            return <InputText id = "update_DNS_zone" defaultValue={value.DNS_zone}></InputText>
+                        }
+                        else {
+                            return <div>
+                                {value.DNS_zone}
+                            </div>
+                        }
+                    }}></Column>
 
             <Column field="hostname" header="Hostname устройства" autoLayout = {true}
                     style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
-                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_config)
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network_journal)
                         {
-
                             const device_info = this.props.device_info.map((index)=>{
                                 return {label: index.hostname, value: index.id_devices, name: index.hostname}
                             });
@@ -70,7 +144,7 @@ class NetworkJournal extends Component {
                     style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         return <div>
-                            {value.user_otv}
+                            {value.user_reg}
                         </div>
                     }}></Column>
 
@@ -115,13 +189,49 @@ class NetworkJournal extends Component {
                     return <div><center>
                         <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                             if(this.props.updateVisible.visible === true){
-                                const updateNetworkJournalInfo = {
-
+                                let DNS_zone;
+                                if(value.DNS_zone === undefined){
+                                    DNS_zone = "";
+                                }
+                                else {
+                                    DNS_zone = value.DNS_zone;
+                                }
+                                let updateNetworkJournalInfo = {
+                                    id_network_journal: value.id_network_journal,
+                                    id_network: this.props.selectNetwork.value,
+                                    network: this.props.selectNetwork.label,
+                                    DNS_zone: document.getElementById("update_DNS_zone").value,
+                                    date_reg: value.date_reg,
+                                    date_old: new Date().toDateString(),
+                                    ip_address: document.getElementById("update_ip_address").value,
+                                    id_user_reg: value.id_user_reg,
+                                    user_reg: value.user_reg,
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    user_old: this.props.user_auth_info.fioUser,
+                                    id_devices: this.props.selectDeviceValue.value,
+                                    devices: this.props.selectDeviceValue.label,
+                                    id_status: 1,
+                                    name_status: ""
                                 };
                                 let firstNetworkJournalInfo = {
-
+                                    id_network_journal: value.id_network_journal,
+                                    id_network: value.id_network,
+                                    network: value.network,
+                                    DNS_zone: DNS_zone,
+                                    date_reg: value.date_reg,
+                                    date_old: new Date().toDateString(),
+                                    ip_address: value.ip_address,
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    user_old: this.props.user_auth_info.fioUser,
+                                    id_devices: value.id_devices,
+                                    devices: value.devices,
+                                    id_status: 1,
+                                    name_status: ""
                                 };
-                                if(updateNetworkJournalInfo.value === firstNetworkJournalInfo.value){
+
+                                console.log(firstNetworkJournalInfo);
+                                console.log(updateNetworkJournalInfo);
+                                if(updateNetworkJournalInfo.toString() === firstNetworkJournalInfo.toString()){
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
                                 }else {
@@ -131,9 +241,8 @@ class NetworkJournal extends Component {
                             }
                             else {
                                 this.props.visibleUpdate(true, value.id_network_journal);
-                                //this.props.DeviceUpdateValue({value: value.id_device, label: value.host_name});
-                                //this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
-
+                                this.props.DeviceUpdateValue({value: value.id_device, label: value.hostname});
+                                this.props.NetworkUpdateValue({value: value.id_network, label: value.network});
                             }
                         }}></Button>
                         <span> </span>
@@ -155,15 +264,29 @@ class NetworkJournal extends Component {
                     return <div><center><Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
                         if(this.props.updateVisible.visible === true){
                             const createNetworkJournal = {
-
+                                id_network_journal: 0,
+                                id_network: this.props.selectNetwork.value,
+                                network: this.props.selectNetwork.label,
+                                DNS_zone: document.getElementById("update_DNS_zone").value,
+                                date_reg: new Date().toDateString(),
+                                date_old: null,
+                                ip_address: document.getElementById("update_ip_address").value,
+                                id_user_reg: this.props.user_auth_info.user_id,
+                                user_reg: this.props.user_auth_info.fioUser,
+                                id_user_old: 0,
+                                user_old: "",
+                                id_devices: this.props.selectDeviceValue.value,
+                                devices: this.props.selectDeviceValue.label,
+                                id_status: 1,
+                                name_status: ""
                             };
-                           // this.props.setConfiguration("http://localhost:8080/Configuration/CreateConfiguration", createConfiguration);
+                            this.props.setNetworkJournal("http://localhost:8080/Configuration/CreateConfiguration", createNetworkJournal);
                             this.props.visibleUpdate(false, null);
                         }
                         else {
                             this.props.visibleUpdate(true, value.id_network_journal);
-                            //this.props.DeviceUpdateValue({value: value.id_device, label: value.host_name});
-                            //this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
+                            this.props.DeviceUpdateValue({value: value.id_device, label: value.hostname});
+                            this.props.NetworkUpdateValue({value: value.id_network, label: value.network });
                         }
                     }}></Button>
                         <span> </span>
@@ -206,9 +329,12 @@ const  mapStateToProps  = state => {
     return {
         network_journal_info: state.networkJournal_reduser.network_journal_info,
         updateVisible: state.action_visible.updateVisible,
-        auth_user_info: state.user_reduser.auth_user_info,
+        user_auth_info: state.user_reduser.user_auth_info,
         device_info: state.device_reduser.device_info,
-        selectDeviceValue: state.device_reduser.selectDeviceValue
+        selectDeviceValue: state.device_reduser.selectDeviceValue,
+        all_network: state.network_reduser.all_network,
+        selectNetwork: state.network_reduser.selectNetwork,
+
     };
 };
 const  mapDispatchToProps = dispatch =>{
@@ -217,7 +343,12 @@ const  mapDispatchToProps = dispatch =>{
         visibleUpdate: (status,id) => dispatch(setStatusShowDialog("updateVisible",status,id)),
         addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
         deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data)),
-        DeviceUpdateValue: (data) => dispatch(getDeviceSelect("selectDeviceValue", data))
+        DeviceUpdateValue: (data) => dispatch(getDeviceSelect("selectDeviceValue", data)),
+        NetworkUpdateValue: (data) => dispatch(getNetworkSelect("selectNetworkValue", data)),
+        fetchAllDevice: url => dispatch(getAllDevice("all",url)),
+        fetchAllNetwork: url => dispatch(getAllNetwork("all",url)),
+        setNetworkJournal: (url, data) => dispatch(setNetworkJournal("all", data)),
+        updateNetworkJournal: (url, id, data) => dispatch(updateNetworkJournal("all", id, data))
     };
 };
 
