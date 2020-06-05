@@ -1,8 +1,9 @@
+
 const startDevice = {
     countEthernetPort: "",
     countOptPort: "",
     hostname: "",
-    id_devices: 0,
+    id_devices: -1,
     id_props_port: 0,
     id_room: 0,
     id_type_devices: 0,
@@ -19,7 +20,18 @@ const startDevice = {
 export function getDeviceSuccess(type, device_info){
     switch (type) {
         case "all":
+            return {
+                type: "get_all_device_success",
+                device_info: device_info
+            };
+        case "addNewLine":
             device_info.push(startDevice);
+            return {
+                type: "get_all_device_success",
+                device_info: device_info
+            };
+        case "deleteNewLine":
+            device_info.pop();
             return {
                 type: "get_all_device_success",
                 device_info: device_info
@@ -27,6 +39,34 @@ export function getDeviceSuccess(type, device_info){
         default: return [];
     }
 }
+
+export function getCrossDevicesEndSuccess(type, infoCrossDevicesEnd){
+    switch (type) {
+        case "all":
+            return {
+                type: "infoCrossDevicesEnd",
+                infoCrossDevicesEnd: infoCrossDevicesEnd
+            };
+        default: return [];
+    }
+}
+
+export function getCrossDevicesSuccess(type, infoCrossDevices){
+    switch (type) {
+        case "all":
+            return {
+                type: "infoCrossDevices",
+                infoCrossDevices: infoCrossDevices
+            };
+        default: return [];
+    }
+}
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getDeviceSuccess(type ,data))
+    }
+}
+
 export function getDeviceSelect(type, data){
     switch (type) {
         case "selectDeviceValue":
@@ -126,6 +166,45 @@ export function updateDevice(type, url, id,data) {
                 )
         }
 }
+
+export function getInfoCrossDeviceEnd(type, url, id) {
+    return (dispatch) => {
+        fetch(url + id, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'GET'
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(infoCrossDevicesEnd => dispatch(
+                getCrossDevicesEndSuccess(type,  infoCrossDevicesEnd))
+            )
+    }
+}
+
+export function getInfoCrossDevice(type, url) {
+    return (dispatch) => {
+        fetch(url, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'GET'
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(infoCrossDevices => dispatch(
+                getCrossDevicesSuccess(type,  infoCrossDevices))
+            )
+    }
+}
+
 export function updateSelectValue(type, label, data) {
     return (dispatch) => {
         const value = [{label: label , value: data}];

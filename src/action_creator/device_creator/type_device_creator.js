@@ -1,17 +1,34 @@
-
+const defaultType_device_info = {
+    id_type_dev: -1,
+    name_type_dev: ""
+};
 
 export function getTypeDeviceSuccess(type, type_device_info){
     switch (type) {
         case "all":
-            type_device_info.push({
-                id_type_dev: 0,
-                name_type_dev: ""
-            });
+            return {
+                type: "get_all_type_device_success",
+                type_device_info: type_device_info
+            };
+
+        case "addNewLine":
+            type_device_info.push(defaultType_device_info);
+            return {
+                type: "get_all_type_device_success",
+                type_device_info: type_device_info
+            };
+        case "deleteNewLine":
+            type_device_info.pop();
             return {
                 type: "get_all_type_device_success",
                 type_device_info: type_device_info
             };
         default: return [];
+    }
+}
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getTypeDeviceSuccess(type ,data))
     }
 }
 

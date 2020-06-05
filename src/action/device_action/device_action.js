@@ -23,3 +23,21 @@ export function selectDeviceLastValue (state = [], action) {
             return state;
     }
 }
+
+export function getInfoCrossDevicesEnd (state = [], action) {
+    switch(action.type) {
+        case "infoCrossDevicesEnd":
+            return action.infoCrossDevicesEnd;
+        default:
+            return state;
+    }
+}
+
+export function getInfoCrossDevices (state = [], action) {
+    switch(action.type) {
+        case "infoCrossDevices":
+            return action.infoCrossDevices;
+        default:
+            return state;
+    }
+}

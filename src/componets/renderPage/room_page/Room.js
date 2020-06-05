@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
 import {connect} from "react-redux";
-import {deleteRoom, getAllRoom, setRoom, updateRoom} from "../../../action_creator/room_creator/room_creator";
+import {
+    addNewLine,
+    deleteRoom,
+    getAllRoom,
+    setRoom,
+    updateRoom
+} from "../../../action_creator/room_creator/room_creator";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {Dropdown} from "primereact/dropdown";
@@ -124,9 +130,10 @@ class Rooms extends Component {
                     }}></Column>
 
 
-            <Column style={{width:'6%'}} field="id_room" header="Действие" body={(value) => {
+            <Column style={{width:'8%'}} field="id_room" header="Действие" body={(value) => {
                 if(value.id_room!==-1){
                     return <div>
+                        <center>
                         <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                             if(this.props.updateVisible.visible === true){
                                 const updateRoom = {
@@ -138,9 +145,25 @@ class Rooms extends Component {
                                     id_nodes: Number(this.props.selectNodesValue.value),
                                     name_nodes: this.props.selectNodesValue.label
                                 };
-                                console.log(JSON.stringify(updateRoom));
-                                this.props.updateRoom("http://localhost:8080/Room/UpdateRoom/", Number(value.id_room), updateRoom)
-                                this.props.visibleUpdate(false, null);
+
+                                const firstRoom = {
+                                    id_room: Number(value.id_room),
+                                    name_room: value.name_room,
+                                    id_user_otv: value.id_user_otv,
+                                    user_otv: value.user_otv,
+                                    type_room: value.type_room,
+                                    id_nodes: value.id_nodes,
+                                    name_nodes: value.name_nodes
+                                };
+
+                                if(JSON.stringify(firstRoom) === JSON.stringify(updateRoom)){
+                                    alert("Информация не изменилась!");
+                                    this.props.visibleUpdate(false, null);
+                                }
+                                else{
+                                    this.props.updateRoom("http://localhost:8080/Room/UpdateRoom/", Number(value.id_room), updateRoom)
+                                    this.props.visibleUpdate(false, null);
+                                }
                             }
                             else {
                                 this.props.visibleUpdate(true, value.id_room);
@@ -156,38 +179,58 @@ class Rooms extends Component {
                             }
                         }}>
                         </Button>
+                            </center>
                     </div>
                 }
                 else {
-                    return <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
-                        if(this.props.updateVisible.visible === true){
-                            const createRoom = {
-                                id_room: 0,
-                                name_room: document.getElementById("update_name_room").value,
-                                id_user_otv: this.props.selectUserValue.value,
-                                user_otv: this.props.selectUserValue.label,
-                                type_room: document.getElementById("update_type_room").value,
-                                id_nodes: this.props.selectNodesValue.value,
-                                name_nodes: this.props.selectNodesValue.label
-                            };
-                            this.props.setRoom("http://localhost:8080/Room/CreateRoom",createRoom);
-                            this.props.visibleUpdate(false, null);
-                        }
-                        else {
-                            this.props.visibleUpdate(true, value.id_room);
-                            this.props.NodesUpdateValue({value: value.id_nodes, label: value.name_nodes});
-                            this.props.UserOtvUpdateValue({value: value.id_user_otv, label: value.user_otv});
-                        }
-                    }}></Button>
+                    return <div>
+                            <center>
+                                <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
+                                    const createRoom = {
+                                        id_room: 0,
+                                        name_room: document.getElementById("update_name_room").value,
+                                        id_user_otv: this.props.selectUserValue.value,
+                                        user_otv: this.props.selectUserValue.label,
+                                        type_room: document.getElementById("update_type_room").value,
+                                        id_nodes: this.props.selectNodesValue.value,
+                                        name_nodes: this.props.selectNodesValue.label
+                                     };
+                                    this.props.setRoom("http://localhost:8080/Room/CreateRoom",createRoom);
+                                    this.props.visibleUpdate(false, null);
+
+                                }}></Button>
+                                 <span> </span>
+                                <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-minus' onClick={() => {
+                                 this.props.deleteNewLine(this.props.room_info);
+                                 this.props.visibleUpdate(false, null);
+                                }}>
+                                </Button>
+                              </center>
+                    </div>
                 }}}></Column>
         </DataTable>
+    }
+
+    addNewLine(){
+        return <Button  style={{width:'8%'}} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
+                if(this.props.updateVisible.str === -1){
+
+                }
+                else {
+                    this.props.addNewLine(this.props.room_info);
+                    this.props.visibleUpdate(true, -1);
+                }
+        }}></Button>
     }
 
     render() {
         return (
             <div>
                 <PageFooter />
-                {this.room_table(this)}
+                    {this.room_table(this)}
+                <div align = "right">
+                    {this.addNewLine(this)}
+                </div>
             </div>
         );
     }
@@ -212,7 +255,9 @@ const  mapDispatchToProps = dispatch =>{
         visibleUpdate: (status,id) => dispatch(setStatusShowDialog("updateVisible",status,id)),
         deleteRoom: (url, data)  => dispatch(deleteRoom("all",url,data)),
         setRoom: (url, data) => dispatch(setRoom("all",url, data)),
-        updateRoom: (url, id, data) => dispatch(updateRoom("all",url, id, data))
+        updateRoom: (url, id, data) => dispatch(updateRoom("all",url, id, data)),
+        addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
+        deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data))
     };
 };
 export default connect(mapStateToProps,mapDispatchToProps)(Rooms)

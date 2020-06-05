@@ -1,3 +1,20 @@
+let defaultValueNetworkJournal ={
+    id_network_journal: -1,
+    id_network: null,
+    network: null,
+    DNS_zone: null,
+    date_reg: null,
+    date_old: null,
+    ip_address: null,
+    id_user_reg: null,
+    user_reg: null,
+    id_user_old: null,
+    user_old: null,
+    id_devices: null,
+    devices: null,
+    id_status: null,
+    name_status: null
+};
 
 export function getNetworkJournalSuccess(type, network_journal_info){
     switch (type) {
@@ -6,10 +23,28 @@ export function getNetworkJournalSuccess(type, network_journal_info){
                 type: "get_all_network_journal_success",
                 network_journal_info: network_journal_info
             };
+        case "addNewLine":
+            network_journal_info.push(defaultValueNetworkJournal);
+            return {
+                type: "get_all_network_journal_success",
+                network_journal_info: network_journal_info
+            };
+        case "deleteNewLine":
+            network_journal_info.pop();
+            return {
+                type: "get_all_network_journal_success",
+                network_journal_info: network_journal_info
+            };
         default: return [];
     }
 
 }
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getNetworkJournalSuccess(type ,data))
+    }
+}
+
 export async function setSelectNetworkJournal (state = [], action) {
     switch(action.type) {
         case "selectNetwork_JournalValue":

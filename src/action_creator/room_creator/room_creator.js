@@ -11,7 +11,18 @@ const startRoom = {
 export function getRoomSuccess(type, room_info){
     switch (type) {
         case "all":
+            return {
+                type: "get_all_room_success",
+                room_info: room_info
+            };
+        case "addNewLine":
             room_info.push(startRoom);
+            return {
+                type: "get_all_room_success",
+                room_info: room_info
+            };
+        case "deleteNewLine":
+            room_info.pop();
             return {
                 type: "get_all_room_success",
                 room_info: room_info
@@ -28,6 +39,11 @@ export function getRoomSelect(type, data){
                 selectRoomValue: data
             };
         default: return [];
+    }
+}
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getRoomSuccess(type ,data))
     }
 }
 

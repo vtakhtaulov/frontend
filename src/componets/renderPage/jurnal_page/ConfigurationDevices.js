@@ -7,7 +7,8 @@ import {connect} from "react-redux";
 import {
     getAllConfiguration,
     setConfiguration,
-    updateConfiguration
+    updateConfiguration,
+    addNewLine
 } from "../../../action_creator/journal_creator/configuration_creator";
 import {Dropdown} from "primereact/dropdown";
 import {InputText} from "primereact/inputtext";
@@ -151,40 +152,14 @@ class ConfigurationDevices extends Component{
             <Column field="name_status" header="Статус" autoLayout = {true}
                     style={{textAlign:'center'}} sortable={true} filter={true} filterPlaceholder={"Активна/Удалена"} filterField = {"Активна"} filterMatchMode="contains"
                     body={(value) => {
-                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_devices)
-                        {
-                            const Status = this.props.status_action.map((index)=>{
-                                return {label: index.name_status, value: index.id_status, name: index.name_status}
-                            });
-                            return <div>
-                                <Dropdown value={[this.props.selectStatus.label]} options={Status} filter={true}  editable ={true} placeholder={"Активна"}
-                                          id = "update_is_status"  style={{textAlign:'center'}}
-                                          className={'p-dropdown'}
-                                          onChange={(e)=>{
-                                              let label;
-                                              let value;
-                                              let data = this.props.status_action;
-                                              for(let i = 0 ; i<= data.length; i++) {
-                                                  if (data[i].id_status === e.value) {
-                                                      label = data[i].name_status;
-                                                      value = data[i].id_status;
-                                                      break;
-                                                  }
-                                              }
-                                              this.props.StatusUpdateValue({label: label, value: value})
-                                          }}/>
-                            </div>
-                        }
-                        else{
                             return <div>
                                 {value.name_status}
                             </div>
-                        }
                     }}></Column>
 
             <Column style={{width:'6%'}} field="id_devices" header="Действие" body={(value) => {
                 if(value.id_config!==-1){
-                    return <div>
+                    return <div><center>
                         <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                             if(this.props.updateVisible.visible === true){
                                 const updateConfiguration = {
@@ -203,9 +178,29 @@ class ConfigurationDevices extends Component{
                                     id_status: 2,
                                     name_status: ""
                                 };
-                                this.props.updateConfiguration("http://localhost:8080/Configuration/UpdateConfiguration/", Number(value.id_config), updateConfiguration)
-                                console.log(updateConfiguration);
-                                this.props.visibleUpdate(false, null);
+                                let lastValue = {
+                                    id_config: value.id_config,
+                                    id_device: value.id_device,
+                                    host_name: value.host_name,
+                                    config_first: value.config_first,
+                                    config_last: "",
+                                    deference: value.deference,
+                                    id_user_reg: value.id_user_reg,
+                                    user_reg: value.user_reg,
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    user_old: this.props.user_auth_info.fioUser,
+                                    date_reg: (new Date(value.date_reg)).toLocaleDateString(),
+                                    date_old: (new Date()).toLocaleDateString(),
+                                    id_status: 2,
+                                    name_status: ""
+                                };
+                                if(updateConfiguration.value === lastValue.value){
+                                    alert("Информация не изменилась!");
+                                    this.props.visibleUpdate(false, null);
+                                }else {
+                                    this.props.updateConfiguration("http://localhost:8080/Configuration/UpdateConfiguration/", Number(value.id_config), updateConfiguration);
+                                    this.props.visibleUpdate(false, null);
+                                }
                             }
                             else {
                                 this.props.visibleUpdate(true, value.id_config);
@@ -239,10 +234,11 @@ class ConfigurationDevices extends Component{
                             }
                         }}>
                         </Button>
+                    </center>
                     </div>
                 }
                 else {
-                    return <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
+                    return <div><center><Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
                         if(this.props.updateVisible.visible === true){
                             const createConfiguration = {
                                 id_config: 0,
@@ -269,16 +265,37 @@ class ConfigurationDevices extends Component{
                             this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
                         }
                     }}></Button>
+                        <span> </span>
+                    <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-minus' onClick={() => {
+                        this.props.deleteNewLine(this.props.config_dev_info);
+                        this.props.visibleUpdate(false, null);
+                    }}>
+                    </Button>
+                    </center>
+                    </div>
                 }}}></Column>
         </DataTable>
+    }
+    addNewLine(){
+        return <Button  style={{width:'6%'}} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
+            if(this.props.updateVisible.str === -1){
+
+            }
+            else {
+                this.props.addNewLine(this.props.config_dev_info);
+                this.props.visibleUpdate(true, -1);
+            }
+        }}></Button>
     }
 
     render() {
         return (
             <div><PageFooter/>
-                <Panel header="Журнал конфигурации телекоммуникационного оборудования">
+                <Panel header="Журнал конфигурации телекоммуникационного оборудования"/>
                     {this.configuration_table(this)}
-                </Panel>
+                    <div align={"right"}>
+                        {this.addNewLine(this)}
+                    </div>
             </div>
         );
     }
@@ -307,7 +324,9 @@ const  mapDispatchToProps = dispatch =>{
         DeviceUpdateValue: (data) => dispatch(getDeviceSelect("selectDeviceValue", data)),
         StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data)),
         updateConfiguration: (url, id, data) => dispatch(updateConfiguration("all",url, id, data)),
-        setConfiguration: (url, data) => dispatch(setConfiguration("all",url, data))
+        setConfiguration: (url, data) => dispatch(setConfiguration("all",url, data)),
+        addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
+        deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data))
     };
 };
 

@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 
-import thunk from 'redux-thunk';
+import thunkMiddleware from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import root_reduser from "../redusers/RootReduser";
 import {logger} from "redux-logger";
@@ -13,7 +13,7 @@ let saver = store => next => action => {
 }
 
 
-let middleware = applyMiddleware(logger, thunk, saver);
+let middleware = applyMiddleware(logger, thunkMiddleware, saver);
 const store =() => {
     try {
         return JSON.parse(localStorage['RootStore']);

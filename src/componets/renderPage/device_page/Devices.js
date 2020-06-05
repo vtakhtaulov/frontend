@@ -8,7 +8,7 @@ import {
     deleteDevice,
     getAllDevice, getDeviceSelect,
     setDevice,
-    updateDevice
+    updateDevice, addNewLine
 } from "../../../action_creator/device_creator/device_creator";
 import {Button} from "primereact/button";
 import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
@@ -188,7 +188,7 @@ class Devices extends Component {
                             });
                             return <div>
                                 <Dropdown  value={[this.props.selectUserValue.label]} options={fioUserOtv} filter={true} editable ={true}
-                                           id = "update_type_device"  style={{textAlign:'center'}}
+                                           id = "update_user_otv"  style={{textAlign:'center'}}
                                            className={'p-dropdown'}
                                            onChange={(e)=>{
                                                let label;
@@ -247,8 +247,8 @@ class Devices extends Component {
                     }}></Column>
 
             <Column style={{width:'6%'}} field="id_devices" header="Действие" body={(value) => {
-                if(value.id_devices!==0){
-                return <div>
+                if(value.id_devices!==-1){
+                return <div><center>
                     <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                         if(this.props.updateVisible.visible === true){
                             const updateDevice = {
@@ -269,8 +269,32 @@ class Devices extends Component {
                                 name_status: this.props.selectStatus.label
 
                             };
-                              this.props.updateDevice("http://localhost:8080/Devices/UpdateDevices/", Number(value.id_devices), updateDevice)
-                            this.props.visibleUpdate(false, null);
+
+                            const firstDevice = {
+                                id_devices: Number(value.id_devices),
+                                id_type_devices: value.id_type_devices,
+                                type_device: value.type_device,
+                                id_user_otv: value.id_user_otv,
+                                user_otv: value.user_otv,
+                                hostname: value.hostname,
+                                mac_address: value.mac_address,
+                                inventar_number: value.inventar_number,
+                                id_room: value.id_room,
+                                room: value.room,
+                                id_props_port: value.id_props_port,
+                                countOptPort: value.countOptPort,
+                                countEthernetPort: value.countEthernetPort,
+                                id_status: value.id_status,
+                                name_status: value.name_status
+
+                            };
+                            if(JSON.stringify(updateDevice) === JSON.stringify(firstDevice)){
+                                alert("Информация не изменилась!");
+                                this.props.visibleUpdate(false, null);
+                            }else {
+                                this.props.updateDevice("http://localhost:8080/Devices/UpdateDevices/", Number(value.id_devices), updateDevice)
+                                this.props.visibleUpdate(false, null);
+                            }
                         }
                         else {
                             this.props.visibleUpdate(true, value.id_devices);
@@ -289,11 +313,11 @@ class Devices extends Component {
                         }
                     }}>
                     </Button>
+                    </center>
                 </div>
             }
             else {
-                    return <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
-                        if(this.props.updateVisible.visible === true){
+                     return <div><center> <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
                              const createDevice = {
                                   id_devices: 0,
                                   id_type_devices: this.props.selectDeviceValue.value,
@@ -311,28 +335,42 @@ class Devices extends Component {
                                   id_status: this.props.selectStatus.value,
                                   name_status: this.props.selectStatus.label
                               };
-                             this.props.setDevice("http://localhost:8080/Devices/CreateDevices",createDevice);
+                             this.props.setDevice("http://localhost:8080/Devices/CreateDevices", createDevice);
                              this.props.visibleUpdate(false, null);
-                        }
-                        else {
-                            this.props.visibleUpdate(true, value.id_devices);
-                            this.props.TypeDeviceUpdateValue({value: value.id_type_devices, label: value.type_device});
-                            this.props.UserOtvUpdateValue({value: value.id_user_otv, label: value.user_otv});
-                            this.props.RoomUpdateValue({value: value.id_room, label: value.room});
-                            this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
-                        }
                     }}></Button>
+                        <span> </span>
+                    <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-minus' onClick={() => {
+                        this.props.deleteNewLine(this.props.device_info);
+                        this.props.visibleUpdate(false, null);
+                    }}>
+                    </Button>
+                    </center>
+                </div>
             }}} >
+
             </Column>
         </DataTable>
+    }
+
+    addNewLine(){
+        return <Button  style={{width:'6%'}} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
+            if(this.props.updateVisible.str === -1){
+            }
+            else {
+                this.props.addNewLine(this.props.device_info);
+                this.props.visibleUpdate(true, -1);
+            }
+        }}></Button>
     }
 
     render() {
         return (
             <div><PageFooter/>
-                <Panel header="Оборудование организации" >
+                <Panel header="Оборудование организации" />
                     {this.table_devices(this)}
-                </Panel>
+                <div align = "right">
+                    {this.addNewLine(this)}
+                </div>
             </div>
         );
     }
@@ -365,7 +403,9 @@ const  mapDispatchToProps = dispatch =>{
         TypeDeviceUpdateValue: (data) => dispatch(getDeviceSelect("selectDeviceValue", data)),
         UserOtvUpdateValue: (data) => dispatch(getUserSelect("selectUserValue", data)),
         RoomUpdateValue: (data) => dispatch(getRoomSelect("selectRoomValue", data)),
-        StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data))
+        StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data)),
+        addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
+        deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data))
     };
 };
 
