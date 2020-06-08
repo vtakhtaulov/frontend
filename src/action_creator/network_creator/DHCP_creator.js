@@ -21,6 +21,22 @@ export function getDHCPSelect(type, data){
     }
 }
 
+export function checkNewDHCPPool(type ,check){
+    switch(type){
+        case true:
+            return {
+                type: true,
+                statusCheck: check
+            };
+        case false:
+            return {
+                type: false,
+                statusCheck: check
+            };
+        default: return [];
+    }
+}
+
 export function getAllDHCP(type, url){
     return (dispatch) =>{
         fetch(url)

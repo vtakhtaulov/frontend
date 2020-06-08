@@ -1,3 +1,17 @@
+const defaultPool = {
+    id_pool_address: -1,
+    name_pool: null,
+    ip_addres_start: null,
+    ip_addres_end: null,
+    date_reg: null,
+    date_old: null,
+    user_old: null,
+    id_user_old: null,
+    user_reg: null,
+    id_user_reg: null,
+    id_status: null,
+    name_status: null
+};
 
 export function getPoolSuccess(type, pool_info){
     switch (type) {
@@ -6,9 +20,20 @@ export function getPoolSuccess(type, pool_info){
                 type: "get_all_pool_success",
                 pool_info: pool_info
             };
+        case "addNewLine":
+            pool_info.push(defaultPool);
+            return {
+                type: "get_all_pool_success",
+                pool_info: pool_info
+            };
+        case "deleteNewLine":
+            pool_info.pop();
+            return {
+                type: "get_all_pool_success",
+                pool_info: pool_info
+            };
         default: return [];
     }
-
 }
 
 export function getPoolSelect(type, data){
@@ -19,6 +44,11 @@ export function getPoolSelect(type, data){
                 selectPoolValue: data
             };
         default: return [];
+    }
+}
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getPoolSuccess(type ,data))
     }
 }
 

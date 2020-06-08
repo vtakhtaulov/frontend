@@ -15,3 +15,13 @@ export function selectDHCP (state = [], action) {
             return state;
     }
 }
+
+export function checkDHCP (state = [], action) {
+    switch(action.type) {
+        case true:
+            return action.statusCheck;
+        case false:
+            return action.statusCheck;
+        default: return state;
+    }
+}

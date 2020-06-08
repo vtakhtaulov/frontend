@@ -4,7 +4,12 @@ import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { connect } from "react-redux";
-import { addNewLine, getAllNetwork } from "../../../action_creator/network_creator/network_creator";
+import {
+    addNewLine,
+    getAllNetwork,
+    setNetwork,
+    updateNetwork
+} from "../../../action_creator/network_creator/network_creator";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
@@ -12,8 +17,7 @@ import { setStatusShowDialog } from "../../../action_creator/action_users_creato
 import { getStatusSelect } from "../../../action_creator/status_creator";
 import { getAllVlan, getVlanSelect } from "../../../action_creator/network_creator/vlan_creator";
 import { getAllNetworkPool, getNetworkPoolSelect } from "../../../action_creator/network_creator/network_pool_creator";
-import { getAllDHCP, getDHCPSelect } from "../../../action_creator/network_creator/DHCP_creator";
-import {Checkbox} from "primereact/checkbox";
+import { getAllDHCP, getDHCPSelect} from "../../../action_creator/network_creator/DHCP_creator";
 
 
 class Network extends Component {
@@ -143,50 +147,46 @@ class Network extends Component {
                 }}></Column>
 
             <Column field="dhcp_pool" header="DHCP пул" autoLayout={true}
-                style={{ textAlign: 'center', width: "240px" }} sortable={true} filter={true} filterMatchMode="contains"
-                body={(value) => {
-                    if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
-                        if (this.props.dhcp_info.length === 0) {
-                            this.props.fetchAllDhcp("http://localhost:8080/DHCP/DHCPAll");
-                        }
-                        else {
-                        }
-                        const dhcp_info = this.props.dhcp_info.map((index) => {
-                            return { label: index.address_start + "-" + index.address_end, value: index.id_DHСP_pool, name: index.address_start + "-" + index.address_end }
-                        });
-                        return<div>
-                                 <div align={'left'}>
-                                     <Checkbox />
-                                         <label  className="p-checkbox-label">Создать новый DHCP пул.</label>
-                                 </div>
-                            <br />
-                            <div align={'left'}>
-                            <Dropdown value={[this.props.selectDhcp.label]} options={dhcp_info} editable={true}
-                                id="update_host_name" style={{ textAlign: 'center' , width: '220px'}} filter={true}
-                                className={'p-dropdown'}
-                                onChange={(e) => {
-                                    let label;
-                                    let value;
-                                    let data = this.props.dhcp_info;
-                                    for (let i = 0; i <= data.length; i++) {
-                                        if (data[i].id_DHСP_pool === e.value) {
-                                            label = data[i].address_start + "-" + data[i].address_end;
-                                            value = data[i].id_DHСP_pool;
-                                            break;
-                                        }
-                                    }
-                                    this.props.dhcpUpdateValue({ label: label, value: value })
-                                }}
-                            />
-                        </div>
-                        </div>
-                    }
-                    else {
-                        return <div>
-                            {value.dhcp_pool}
-                        </div>
-                    }
-                }}></Column>
+    style={{textAlign: 'center', width: "240px"}} sortable={true} filter={true} filterMatchMode="contains"
+    body={(value) => {
+        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
+            if (this.props.dhcp_info.length === 0) {
+                this.props.fetchAllDhcp("http://localhost:8080/DHCP/DHCPAll");
+            } else {
+            }
+            const dhcp_info = this.props.dhcp_info.map((index) => {
+                return {
+                    label: index.address_start + "-" + index.address_end,
+                    value: index.id_DHCP_pool,
+                    name: index.address_start + "-" + index.address_end
+                }
+            });
+            return <div align={'left'}>
+                    <Dropdown value={[this.props.selectDhcp.label]} options={dhcp_info} editable={true}
+                              id="update_host_name" style={{textAlign: 'center', width: '220px'}}
+                              filter={true}
+                              className={'p-dropdown'}
+                              onChange={(e) => {
+                                  let label;
+                                  let value;
+                                  let data = this.props.dhcp_info;
+                                  for (let i = 0; i <= data.length; i++) {
+                                      if (data[i].id_DHCP_pool === e.value) {
+                                          label = data[i].address_start + "-" + data[i].address_end;
+                                          value = data[i].id_DHCP_pool;
+                                          break;
+                                      }
+                                  }
+                                  this.props.dhcpUpdateValue({label: label, value: value});
+                              }}
+                              />
+            </div>
+        } else {
+            return <div>
+                {value.dhcp_pool}
+            </div>
+        }
+    }}/>
 
             <Column field="user_reg" header="Пользователь создавший запись" autoLayout={true}
                 style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
@@ -248,56 +248,53 @@ class Network extends Component {
                                 }
 
                                 let firstNetworkInfo = {
-                                    date_old: new Date().toDateString(),
-                                    date_reg: value.date_reg,
-                                    defaultGeteway: defaultGeteway,
+                                    id_network: value.id_network,
+                                    pool_address: value.pool_address,
+                                    id_pool_address: value.id_pool_address,
+                                    user_reg: value.user_reg,
+                                    id_user_reg: value.id_user_reg,
+                                    user_old: "",
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    vlan: value.vlan,
+                                    id_vlan: value.id_vlan,
                                     dhcp_pool: value.dhcp_pool,
                                     id_dhcp_pool: value.id_dhcp_pool,
-                                    id_network: value.id_network,
-                                    id_pool_address: value.id_pool_address,
-                                    id_status: value.id_status,
-                                    id_user_old: this.props.user_auth_info.user_id,
-                                    id_user_reg: value.id_user_reg,
-                                    id_vlan: value.id_vlan,
-                                    ip_address_network: value.ip_address_network+"/"+value.networkMask,
-                                    name_status: value.name_status,
+                                    ip_address_network: value.ip_address_network,
                                     networkMask: value.networkMask,
-                                    pool_address: value.pool_address,
-                                    user_old: "",
-                                    user_reg: value.user_reg,
-                                    vlan: value.vlan
+                                    defaultGeteway: defaultGeteway,
+                                    date_reg: value.date_reg,
+                                    date_old: null,
+                                    id_status: value.id_status,
+                                    name_status: value.name_status
                                 };
 
                                 let lastNetworkInfo = {
-                                    date_old: new Date().toDateString(),
-                                    date_reg: value.date_reg,
-                                    defaultGeteway: document.getElementById("update_defaultGeteway").value,
-                                    dhcp_pool: this.props.selectDhcp.label,
-                                    id_dhcp_pool: this.props.selectDhcp.value,
                                     id_network: value.id_network,
-                                    id_pool_address: this.props.selectNetwork_pool.value,
-                                    id_status: value.id_status,
-                                    id_user_old: this.props.user_auth_info.user_id,
-                                    id_user_reg: value.id_user_reg,
-                                    id_vlan: this.props.selectVlan.value,
-                                    ip_address_network: document.getElementById("update_ip_address_network").value,
-                                    name_status: value.name_status,
-                                    networkMask: value.networkMask,
                                     pool_address: this.props.selectNetwork_pool.label,
-                                    user_old: "",
+                                    id_dhcp_pool: this.props.selectDhcp.value,
                                     user_reg: value.user_reg,
-                                    vlan: this.props.selectVlan.label
+                                    id_user_reg: value.id_user_reg,
+                                    user_old: "",
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    vlan: this.props.selectVlan.label,
+                                    id_vlan: this.props.selectVlan.value,
+                                    dhcp_pool: this.props.selectDhcp.label,
+                                    id_pool_address: this.props.selectNetwork_pool.value,
+                                    ip_address_network: document.getElementById("update_ip_address_network").value,
+                                    networkMask: value.networkMask,
+                                    defaultGeteway: document.getElementById("update_defaultGeteway").value,
+                                    date_reg: value.date_reg,
+                                    date_old: null,
+                                    id_status: value.id_status,
+                                    name_status: value.name_status,
                                 };
-
-                                console.log(firstNetworkInfo);
-                                console.log(lastNetworkInfo);
 
                                 if (JSON.stringify(firstNetworkInfo) === JSON.stringify(lastNetworkInfo)) {
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
                                 } else {
                                     this.props.visibleUpdate(false, null);
-                                    // this.props.updateCrossDevice("http://localhost:8080/CrossDevices/UpdateCrossDevices/", Number(value.id_crossdevices), updateCorossDev);
+                                    this.props.updateNetwork("http://localhost:8080/Network/UpdateNetwork/", Number(value.id_network), lastNetworkInfo);
                                 }
                             }
                             else {
@@ -310,11 +307,36 @@ class Network extends Component {
                         <span> </span>
                         <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={() => {
                             if (window.confirm("Вы уверены, что хотите удалить запись?")) {
-                                const deleteCorossDev = {
+                                let defaultGeteway;
+                                if (value.defaultGeteway === null || value.defaultGeteway === undefined) {
+                                    defaultGeteway = "";
+                                }
+                                else {
+                                    defaultGeteway = value.defaultGeteway;
+                                }
 
+                                let deleteNetwork = {
+                                    id_network: value.id_network,
+                                    pool_address: value.pool_address,
+                                    id_pool_address: value.id_pool_address,
+                                    user_reg: value.user_reg,
+                                    id_user_reg: value.id_user_reg,
+                                    user_old: "",
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    vlan: value.vlan,
+                                    id_vlan: value.id_vlan,
+                                    dhcp_pool: value.dhcp_pool,
+                                    id_dhcp_pool: value.id_dhcp_pool,
+                                    ip_address_network: value.ip_address_network,
+                                    networkMask: value.networkMask,
+                                    defaultGeteway: defaultGeteway,
+                                    date_reg: "",
+                                    date_old: "",
+                                    id_status: value.id_status,
+                                    name_status: value.name_status,
                                 };
 
-                                //this.props.updateCrossDevice("http://localhost:8080/CrossDevices/DeleteCrossDevices/", value.id_crossdevices, deleteCorossDev);
+                                this.props.deleteNetwork("http://localhost:8080/Network/DeleteNetwork/", value.id_network, deleteNetwork);
                             }
                             else {
                             }
@@ -326,11 +348,28 @@ class Network extends Component {
                 else {
                     return <div><center><Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
                         if (this.props.updateVisible.visible === true) {
-                            const createCorossDev = {
-
+                            const createNetwork = {
+                                id_network: 0,
+                                pool_address: this.props.selectNetwork_pool.label,
+                                id_pool_address: this.props.selectNetwork_pool.value,
+                                user_reg: value.user_reg,
+                                id_user_reg: this.props.user_auth_info.user_id,
+                                user_old: "",
+                                id_user_old: 0,
+                                vlan: this.props.selectVlan.label,
+                                id_vlan: this.props.selectVlan.value,
+                                dhcp_pool: this.props.selectDhcp.label,
+                                id_dhcp_pool: this.props.selectDhcp.value,
+                                ip_address_network: document.getElementById("update_ip_address_network").value,
+                                networkMask: 24,
+                                defaultGeteway: document.getElementById("update_defaultGeteway").value,
+                                date_reg: null,
+                                date_old: null,
+                                id_status: 1,
+                                name_status: ""
                             };
-                            console.log(createCorossDev);
-                            // this.props.setCrossDevice("http://localhost:8080/CrossDevices/CreateCrossDevices", createCorossDev);
+
+                            this.props.setNetwork("http://localhost:8080/Network/CreateNetwork", createNetwork);
                             this.props.visibleUpdate(false, null);
                         }
                         else {
@@ -393,7 +432,7 @@ const mapStateToProps = state => {
         selectVlan: state.vlan_reduser.selectVlan,
         selectDhcp: state.dhcp_reduser.selectDhcpValue,
         dhcp_info: state.dhcp_reduser.dhcp_info,
-        user_auth_info: state.user_reduser.user_auth_info
+        checkDHCP: state.dhcp_reduser.checkDHCP
     };
 };
 const mapDispatchToProps = dispatch => {
@@ -408,7 +447,10 @@ const mapDispatchToProps = dispatch => {
         fetchAllNetworkPool: url => dispatch(getAllNetworkPool("all", url)),
         fetchAllVLAN: url => dispatch(getAllVlan("all", url)),
         fetchAllDhcp: url => dispatch(getAllDHCP("all", url)),
-        dhcpUpdateValue: (data) => dispatch(getDHCPSelect("selectDHCPValue", data))
+        dhcpUpdateValue: (data) => dispatch(getDHCPSelect("selectDHCPValue", data)),
+        updateNetwork: (url, id, data) => dispatch(updateNetwork("all",url, id, data)),
+        deleteNetwork: (url, id, data) => dispatch(updateNetwork("all",url, id, data)),
+        setNetwork:(url, data) => dispatch(setNetwork("all", url, data))
     };
 };
 
