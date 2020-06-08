@@ -341,8 +341,6 @@ class CrossesDevice extends Component {
                                     user_otv_dev: ""
                                 };
 
-                                console.log((updateCorossDev));
-                                console.log((firstCorossDev));
                                 console.log((document.getElementById('update_description').value));
 
                                 if(JSON.stringify(updateCorossDev)===JSON.stringify(firstCorossDev)){
@@ -425,7 +423,6 @@ class CrossesDevice extends Component {
                                 inventar_number: "",
                                 user_otv_dev: ""
                             };
-                            console.log(createCorossDev);
                             this.props.setCrossDevice("http://localhost:8080/CrossDevices/CreateCrossDevices", createCorossDev);
                             this.props.visibleUpdate(false, null);
                         }

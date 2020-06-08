@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
-import {Menubar} from "primereact/menubar";
-import {Panel} from "primereact/panel";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {connect} from "react-redux";
-import {getAllNetwork} from "../../../action_creator/network_creator/network_creator";
-import {Dropdown} from "primereact/dropdown";
-import {InputText} from "primereact/inputtext";
-import {Button} from "primereact/button";
-import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
-import {getDeviceLastSelect, getDeviceSelect} from "../../../action_creator/device_creator/device_creator";
-import {getStatusSelect} from "../../../action_creator/status_creator";
-import {getVlanSelect} from "../../../action_creator/network_creator/vlan_creator";
-import {getCrossSelect} from "../../../action_creator/network_creator/crosses_creator";
-import {getPoolSelect} from "../../../action_creator/network_creator/pool_creator";
-import {getNetworkPoolSelect} from "../../../action_creator/network_creator/network_pool_creator";
+import { Panel } from "primereact/panel";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { connect } from "react-redux";
+import { addNewLine, getAllNetwork } from "../../../action_creator/network_creator/network_creator";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { setStatusShowDialog } from "../../../action_creator/action_users_creator";
+import { getStatusSelect } from "../../../action_creator/status_creator";
+import { getAllVlan, getVlanSelect } from "../../../action_creator/network_creator/vlan_creator";
+import { getAllNetworkPool, getNetworkPoolSelect } from "../../../action_creator/network_creator/network_pool_creator";
+import { getAllDHCP, getDHCPSelect } from "../../../action_creator/network_creator/DHCP_creator";
+import {Checkbox} from "primereact/checkbox";
+
 
 class Network extends Component {
     constructor(props) {
@@ -25,283 +24,360 @@ class Network extends Component {
 
     componentDidMount() {
         this.props.fetchAllNetwork("http://localhost:8080/Network/NetworkAll");
+        this.props.visibleUpdate(false, null);
     }
 
     network_table() {
-            return <DataTable value= {this.props.all_network} responsive={true} scrollable={true}>
-                <Column field="pool_address" header="Пул сети" autoLayout = {true}
-                        style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {
+        return <DataTable value={this.props.all_network} responsive={true} scrollable={true}>
+            <Column field="pool_address" header="Пул сети" autoLayout={true}
+                style={{ textAlign: 'center', size: 'auto', width: "240px" }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
+                        if (this.props.network_pool.length === 0) {
+                            this.props.fetchAllNetworkPool("http://localhost:8080/Pool/PoolAll");
+                        } else { }
+                        const device_info = this.props.network_pool.map((index) => {
+                            return { label: index.ip_addres_start + '-' + index.ip_addres_end, value: index.id_pool_address, name: index.ip_addres_start + '-' + index.ip_addres_end }
+                        });
 
-                                const device_info = this.props.network_pool.map((index)=>{
-                                    return {label: index.ip_addres_start +'-'+ index.ip_addres_end, value: index.id_pool_address, name: index.ip_addres_start +'-'+ index.ip_addres_end}
-                                });
-
-                                return <div>
-                                    <Dropdown  value={[this.props.selectNetwork_pool.label]} options={device_info} editable ={true}
-                                               id = "update_pool_address"  style={{textAlign:'center'}} filter={true}
-                                               className={'p-dropdown'}
-                                               onChange={(e)=>{
-                                                   let label;
-                                                   let value;
-                                                   let data = this.props.network_pool;
-                                                   for(let i = 0 ; i<= data.length; i++) {
-                                                       if (data[i].id_pool_address === e.value) {
-                                                           label = data[i].ip_addres_start +'-'+ data[i].ip_addres_end;
-                                                           value = data[i].id_pool_address;
-                                                           break;
-                                                       }
-                                                   }
-                                                   this.props.NetworkPoolUpdateValue({label: label, value: value})
-                                               }}
-                                    />
-                                </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.pool_address}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column field="ip_address_network" header="ip-адресс сети" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {return <div>
-                                <span className="p-float-label">
-                                    <InputText id = "update_ip_address_network" defaultValue={value.ip_address_network} style={{textAlign:'center'}} />
-                                </span>
-                            </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.ip_address_network}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column field="networkMask" header="Маска" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {return <div>
-                                <span className="p-float-label">
-                                    <InputText id = "update_networkMask" defaultValue={value.networkMask} style={{textAlign:'center'}} />
-                                </span>
-                            </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.networkMask}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column field="defaultGeteway" header="Default Geteway" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {return <div>
-                                <span className="p-float-label">
-                                    <InputText id = "update_defaultGeteway" defaultValue={value.defaultGeteway} style={{textAlign:'center'}} />
-                                </span>
-                            </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.defaultGeteway}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column field="vlan" header="Наименование VLAN" autoLayout = {true}
-                        style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {
-
-                                const device_info = this.props.device_info.map((index)=>{
-                                    return {label: index.hostname, value: index.id_devices, name: index.hostname}
-                                });
-
-                                return <div>
-                                    <Dropdown  value={[this.props.selectDeviceValue.label]} options={device_info} editable ={true}
-                                               id = "update_host_name"  style={{textAlign:'center'}} filter={true}
-                                               className={'p-dropdown'}
-                                               onChange={(e)=>{
-                                                   let label;
-                                                   let value;
-                                                   let data = this.props.device_info;
-                                                   for(let i = 0 ; i<= data.length; i++) {
-                                                       if (data[i].id_devices === e.value) {
-                                                           label = data[i].hostname;
-                                                           value = data[i].id_devices;
-                                                           break;
-                                                       }
-                                                   }
-                                                   this.props.DeviceUpdateValue({label: label, value: value})
-                                               }}
-                                    />
-                                </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.vlan}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column field="dhcp_pool" header="DHCP пул" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {return <div>
-                                <span className="p-float-label">
-                                    <InputText id = "update_dhcp_pool" defaultValue={value.dhcp_pool} style={{textAlign:'center'}} />
-                                </span>
-                            </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.dhcp_pool}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column field="user_reg" header="Пользователь создавший запись" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            return <div>
-                                {value.user_reg}
-                            </div>
-                        }}></Column>
-
-                <Column field="date_reg" header="Дата регистрации" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            return <div>
-                                {value.date_reg}
-                            </div>
-                        }}></Column>
-
-                <Column field="user_old" header="Пользователь изменивший запись" autoLayout = {true}
-                        style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            return <div>
-                                {value.user_old}
-                            </div>
-                        }}></Column>
-
-                <Column field="date_old" header="Дата изменения" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterMatchMode="contains"
-                        body={(value) => {
-                            return <div>
-                                {value.date_old}
-                            </div>
-                        }}></Column>
-
-                <Column field="name_status" header="Статус" autoLayout = {true}
-                        style={{textAlign:'center'}} sortable={true} filter={true} filterPlaceholder={"Активна/Удалена"} filterField = {"Активна"} filterMatchMode="contains"
-                        body={(value) => {
-                            if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network)
-                            {
-                                const Status = this.props.status_action.map((index)=>{
-                                    return {label: index.name_status, value: index.id_status, name: index.name_status}
-                                });
-                                return <div>
-                                    <Dropdown value={[this.props.selectStatus.label]} options={Status} filter={true}  editable ={true} placeholder={"Активна"}
-                                              id = "update_is_status"  style={{textAlign:'center'}}
-                                              className={'p-dropdown'}
-                                              onChange={(e)=>{
-                                                  let label;
-                                                  let value;
-                                                  let data = this.props.status_action;
-                                                  for(let i = 0 ; i<= data.length; i++) {
-                                                      if (data[i].id_status === e.value) {
-                                                          label = data[i].name_status;
-                                                          value = data[i].id_status;
-                                                          break;
-                                                      }
-                                                  }
-                                                  this.props.StatusUpdateValue({label: label, value: value})
-                                              }}/>
-                                </div>
-                            }
-                            else{
-                                return <div>
-                                    {value.name_status}
-                                </div>
-                            }
-                        }}></Column>
-
-                <Column style={{width:'6%'}} field="id_devices" header="Действие" body={(value) => {
-                    if(value.id_config!==-1){
                         return <div>
-                            <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
-                                if(this.props.updateVisible.visible === true){
-                                    const updateConfiguration = {
-
-                                    };
-                                   // this.props.updateConfiguration("http://localhost:8080/Configuration/UpdateConfiguration/", Number(value.id_config), updateConfiguration)
-                                    //console.log(updateConfiguration);
-                                    this.props.visibleUpdate(false, null);
-                                }
-                                else {
-                                    this.props.visibleUpdate(true, value.id_network);
-                                    this.props.NetworkPoolUpdateValue({value: value.id_pool_address, label: value.name_pool});
-                                    this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
-
-                                }
-                            }}></Button>
-                            <span> </span>
-                            <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
-                                if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                                    const deleteConfiguration = {
-
-                                    };
-                                   // this.props.updateConfiguration("http://localhost:8080/Configuration/DeleteConfiguration/", value.id_config, deleteConfiguration);
-                                }
-                                else{
-                                }
-                            }}>
-                            </Button>
+                            <Dropdown value={[this.props.selectNetwork_pool.label]} options={device_info} editable={true}
+                                id="update_pool_address" style={{ textAlign: 'center', width: "220px" }} filter={true}
+                                className={'p-dropdown'}
+                                onChange={(e) => {
+                                    let label;
+                                    let value;
+                                    let data = this.props.network_pool;
+                                    for (let i = 0; i <= data.length; i++) {
+                                        if (data[i].id_pool_address === e.value) {
+                                            label = data[i].ip_addres_start + '-' + data[i].ip_addres_end;
+                                            value = data[i].id_pool_address;
+                                            break;
+                                        }
+                                    }
+                                    this.props.NetworkPoolUpdateValue({ label: label, value: value })
+                                }}
+                            />
                         </div>
                     }
                     else {
-                        return <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
-                            if(this.props.updateVisible.visible === true){
-                                const createConfiguration = {
+                        return <div>
+                            {value.pool_address}
+                        </div>
+                    }
+                }}></Column>
 
+            <Column field="ip_address_network" header="ip-адресс сети / маска" autoLayout={true}
+                style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
+                        return <div>
+                            <span className="p-float-label">
+                                <InputText id="update_ip_address_network" defaultValue={value.ip_address_network + "/" + value.networkMask} style={{ textAlign: 'center', width: '140px' }} />
+                            </span>
+                        </div>
+                    }
+                    else {
+                        return <div>
+                            {value.ip_address_network + "/" + value.networkMask}
+                        </div>
+                    }
+                }}></Column>
+
+            <Column field="defaultGeteway" header="Default Geteway" autoLayout={true}
+                style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
+                        return <div>
+                            <span className="p-float-label">
+                                <InputText id="update_defaultGeteway" defaultValue={value.defaultGeteway} style={{ textAlign: 'center', width: '120px' }} />
+                            </span>
+                        </div>
+                    }
+                    else {
+                        return <div>
+                            {value.defaultGeteway}
+                        </div>
+                    }
+                }}></Column>
+
+            <Column field="vlan" header="Наименование VLAN" autoLayout={true}
+                style={{ textAlign: 'center', size: 'auto' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
+                        if (this.props.network_pool.length === 0) {
+                            this.props.fetchAllVLAN("http://localhost:8080/Vlan/VlanAll");
+                        }
+                        else {
+
+                        }
+                        const vlan_info = this.props.vlan_info.map((index) => {
+                            return { label: "[" + index.vlan_number + "] " + index.vlan_name, value: index.id_vlan, name: "[" + index.vlan_number + "] " + index.vlan_name }
+                        });
+
+                        return <div>
+                            <Dropdown value={[this.props.selectVlan.label]} options={vlan_info} editable={true}
+                                id="update_host_name" style={{ textAlign: 'center' }} filter={true}
+                                className={'p-dropdown'}
+                                onChange={(e) => {
+                                    let label;
+                                    let value;
+                                    let data = this.props.vlan_info;
+                                    for (let i = 0; i <= data.length; i++) {
+                                        if (data[i].id_vlan === e.value) {
+                                            label = "[" + data[i].vlan_number + "] " + data[i].vlan_name;
+                                            value = data[i].id_vlan;
+                                            break;
+                                        }
+                                    }
+                                    this.props.VlanUpdateValue({ label: label, value: value })
+                                }}
+                            />
+                        </div>
+                    }
+                    else {
+                        return <div>
+                            {value.vlan}
+                        </div>
+                    }
+                }}></Column>
+
+            <Column field="dhcp_pool" header="DHCP пул" autoLayout={true}
+                style={{ textAlign: 'center', width: "240px" }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
+                        if (this.props.dhcp_info.length === 0) {
+                            this.props.fetchAllDhcp("http://localhost:8080/DHCP/DHCPAll");
+                        }
+                        else {
+                        }
+                        const dhcp_info = this.props.dhcp_info.map((index) => {
+                            return { label: index.address_start + "-" + index.address_end, value: index.id_DHСP_pool, name: index.address_start + "-" + index.address_end }
+                        });
+                        return<div>
+                                 <div align={'left'}>
+                                     <Checkbox />
+                                         <label  className="p-checkbox-label">Создать новый DHCP пул.</label>
+                                 </div>
+                            <br />
+                            <div align={'left'}>
+                            <Dropdown value={[this.props.selectDhcp.label]} options={dhcp_info} editable={true}
+                                id="update_host_name" style={{ textAlign: 'center' , width: '220px'}} filter={true}
+                                className={'p-dropdown'}
+                                onChange={(e) => {
+                                    let label;
+                                    let value;
+                                    let data = this.props.dhcp_info;
+                                    for (let i = 0; i <= data.length; i++) {
+                                        if (data[i].id_DHСP_pool === e.value) {
+                                            label = data[i].address_start + "-" + data[i].address_end;
+                                            value = data[i].id_DHСP_pool;
+                                            break;
+                                        }
+                                    }
+                                    this.props.dhcpUpdateValue({ label: label, value: value })
+                                }}
+                            />
+                        </div>
+                        </div>
+                    }
+                    else {
+                        return <div>
+                            {value.dhcp_pool}
+                        </div>
+                    }
+                }}></Column>
+
+            <Column field="user_reg" header="Пользователь создавший запись" autoLayout={true}
+                style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    return <div>
+                        {value.user_reg}
+                    </div>
+                }}></Column>
+
+            <Column field="date_reg" header="Дата регистрации" autoLayout={true}
+                style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    return <div>
+                        {value.date_reg}
+                    </div>
+                }}></Column>
+
+            <Column field="user_old" header="Пользователь изменивший запись" autoLayout={true}
+                style={{ textAlign: 'center', size: 'auto' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    if (value.id_user_old === 0) {
+                        return <div>
+                        </div>
+                    } else {
+                        return <div>
+                            {value.user_old}
+                        </div>
+                    }
+                }}></Column>
+
+            <Column field="date_old" header="Дата изменения" autoLayout={true}
+                style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
+                body={(value) => {
+                    return <div>
+                        {value.date_old}
+                    </div>
+                }}></Column>
+
+            <Column field="name_status" header="Статус" autoLayout={true}
+                style={{ textAlign: 'center', width: "100px" }} sortable={true} filter={true} filterPlaceholder={"Активна/Удалена"} filterField={"Активна"} filterMatchMode="contains"
+                body={(value) => {
+                    return <div>
+                        {value.name_status}
+                    </div>
+
+                }}></Column>
+
+            <Column style={{ width: '6%' }} field="id_network" header="Действие" body={(value) => {
+                if (value.id_network !== -1) {
+                    return <div><center>
+                        <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
+                            let defaultGeteway;
+                            if (this.props.updateVisible.visible === true) {
+                                if (value.defaultGeteway === null || value.defaultGeteway === undefined) {
+                                    defaultGeteway = "";
+                                }
+                                else {
+                                    defaultGeteway = value.defaultGeteway;
+                                }
+
+                                let firstNetworkInfo = {
+                                    date_old: new Date().toDateString(),
+                                    date_reg: value.date_reg,
+                                    defaultGeteway: defaultGeteway,
+                                    dhcp_pool: value.dhcp_pool,
+                                    id_dhcp_pool: value.id_dhcp_pool,
+                                    id_network: value.id_network,
+                                    id_pool_address: value.id_pool_address,
+                                    id_status: value.id_status,
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    id_user_reg: value.id_user_reg,
+                                    id_vlan: value.id_vlan,
+                                    ip_address_network: value.ip_address_network+"/"+value.networkMask,
+                                    name_status: value.name_status,
+                                    networkMask: value.networkMask,
+                                    pool_address: value.pool_address,
+                                    user_old: "",
+                                    user_reg: value.user_reg,
+                                    vlan: value.vlan
                                 };
-                                //this.props.setConfiguration("http://localhost:8080/Configuration/CreateConfiguration", createConfiguration);
-                                this.props.visibleUpdate(false, null);
+
+                                let lastNetworkInfo = {
+                                    date_old: new Date().toDateString(),
+                                    date_reg: value.date_reg,
+                                    defaultGeteway: document.getElementById("update_defaultGeteway").value,
+                                    dhcp_pool: this.props.selectDhcp.label,
+                                    id_dhcp_pool: this.props.selectDhcp.value,
+                                    id_network: value.id_network,
+                                    id_pool_address: this.props.selectNetwork_pool.value,
+                                    id_status: value.id_status,
+                                    id_user_old: this.props.user_auth_info.user_id,
+                                    id_user_reg: value.id_user_reg,
+                                    id_vlan: this.props.selectVlan.value,
+                                    ip_address_network: document.getElementById("update_ip_address_network").value,
+                                    name_status: value.name_status,
+                                    networkMask: value.networkMask,
+                                    pool_address: this.props.selectNetwork_pool.label,
+                                    user_old: "",
+                                    user_reg: value.user_reg,
+                                    vlan: this.props.selectVlan.label
+                                };
+
+                                console.log(firstNetworkInfo);
+                                console.log(lastNetworkInfo);
+
+                                if (JSON.stringify(firstNetworkInfo) === JSON.stringify(lastNetworkInfo)) {
+                                    alert("Информация не изменилась!");
+                                    this.props.visibleUpdate(false, null);
+                                } else {
+                                    this.props.visibleUpdate(false, null);
+                                    // this.props.updateCrossDevice("http://localhost:8080/CrossDevices/UpdateCrossDevices/", Number(value.id_crossdevices), updateCorossDev);
+                                }
                             }
                             else {
                                 this.props.visibleUpdate(true, value.id_network);
-                                this.props.NetworkPoolUpdateValue({value: value.id_pool_address, label: value.name_pool});
-                                this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
+                                this.props.VlanUpdateValue({ label: value.vlan, value: value.id_vlan });
+                                this.props.dhcpUpdateValue({ label: value.dhcp_pool, value: value.id_dhcp_pool });
+                                this.props.NetworkPoolUpdateValue({ label: value.pool_address, value: value.id_pool_address })
                             }
                         }}></Button>
-                    }}}></Column>
-            </DataTable>
+                        <span> </span>
+                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={() => {
+                            if (window.confirm("Вы уверены, что хотите удалить запись?")) {
+                                const deleteCorossDev = {
 
+                                };
+
+                                //this.props.updateCrossDevice("http://localhost:8080/CrossDevices/DeleteCrossDevices/", value.id_crossdevices, deleteCorossDev);
+                            }
+                            else {
+                            }
+                        }}>
+                        </Button>
+                    </center>
+                    </div>
+                }
+                else {
+                    return <div><center><Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
+                        if (this.props.updateVisible.visible === true) {
+                            const createCorossDev = {
+
+                            };
+                            console.log(createCorossDev);
+                            // this.props.setCrossDevice("http://localhost:8080/CrossDevices/CreateCrossDevices", createCorossDev);
+                            this.props.visibleUpdate(false, null);
+                        }
+                        else {
+                            this.props.visibleUpdate(true, value.id_network);
+                            this.props.StatusUpdateValue({ value: value.id_status, label: value.name_status });
+                            this.props.VlanUpdateValue({ label: value.name_vlan, value: value.id_vlan });
+                        }
+                    }}></Button> <span> </span>
+                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-minus' onClick={() => {
+                            this.props.deleteNewLine(this.props.all_network);
+                            this.props.visibleUpdate(false, null);
+                        }}>
+                        </Button>
+                    </center>
+                    </div>
+                }
+            }}></Column>
+        </DataTable>
     }
+
+    addNewLine() {
+        return <Button style={{ width: '6%' }} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
+            if (this.props.updateVisible.str === -1) {
+                this.props.visibleUpdate(true, false);
+            }
+            else {
+                this.props.addNewLine(this.props.all_network);
+                this.props.visibleUpdate(true, -1);
+            }
+        }}></Button>
+    }
+
     render() {
         return (
-            <div><PageFooter/>
-                <Menubar model={this.items} />
-                <Panel header="Сети">
-                    {this.network_table(this)}
-                </Panel>
+            <div><PageFooter />
+                <Panel header="Сети" />
+                {this.network_table(this)}
+                <div align={"right"}>
+                    {this.addNewLine(this)}
+                </div>
+
             </div>
         );
     }
 }
 
-const  mapStateToProps  = state => {
+const mapStateToProps = state => {
     return {
         all_network: state.network_reduser.all_network,
         selectUserValue: state.user_reduser.selectUserValue,
@@ -311,17 +387,29 @@ const  mapStateToProps  = state => {
         selectStatus: state.status_reduser.selectStatus,
         status_action: state.status_reduser.status_action,
         network_pool: state.networ_pool_reduser.network_pool,
-        selectNetwork_pool: state.networ_pool_reduser.selectNetwork_pool
+        selectNetwork_pool: state.networ_pool_reduser.selectNetwork_pool,
+        device_info: state.device_reduser.device_info,
+        selectDeviceValue: state.device_reduser.selectDeviceValue,
+        selectVlan: state.vlan_reduser.selectVlan,
+        selectDhcp: state.dhcp_reduser.selectDhcpValue,
+        dhcp_info: state.dhcp_reduser.dhcp_info,
+        user_auth_info: state.user_reduser.user_auth_info
     };
 };
-const  mapDispatchToProps = dispatch =>{
+const mapDispatchToProps = dispatch => {
     return {
-        fetchAllNetwork: url => dispatch(getAllNetwork("all",url)),
-        visibleUpdate: (status,id) => dispatch(setStatusShowDialog("updateVisible",status,id)),
+        fetchAllNetwork: url => dispatch(getAllNetwork("all", url)),
+        visibleUpdate: (status, id) => dispatch(setStatusShowDialog("updateVisible", status, id)),
         StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data)),
         VlanUpdateValue: (data) => dispatch(getVlanSelect("selectVlanValue", data)),
-        NetworkPoolUpdateValue: (data) => dispatch(getNetworkPoolSelect("selectNetwork_poolValue", data))
+        NetworkPoolUpdateValue: (data) => dispatch(getNetworkPoolSelect("selectNetwork_poolValue", data)),
+        addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
+        deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data)),
+        fetchAllNetworkPool: url => dispatch(getAllNetworkPool("all", url)),
+        fetchAllVLAN: url => dispatch(getAllVlan("all", url)),
+        fetchAllDhcp: url => dispatch(getAllDHCP("all", url)),
+        dhcpUpdateValue: (data) => dispatch(getDHCPSelect("selectDHCPValue", data))
     };
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Network)
+export default connect(mapStateToProps, mapDispatchToProps)(Network)

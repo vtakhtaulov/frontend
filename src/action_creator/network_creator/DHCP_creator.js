@@ -8,7 +8,17 @@ export function getDHCPSuccess(type, dhcp_info){
             };
         default: return [];
     }
+}
 
+export function getDHCPSelect(type, data){
+    switch (type) {
+        case "selectDHCPValue":
+            return {
+                type: "selectDHCPValue",
+                selectDHCPValue: data
+            };
+        default: return [];
+    }
 }
 
 export function getAllDHCP(type, url){

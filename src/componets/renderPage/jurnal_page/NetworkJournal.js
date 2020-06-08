@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PageFooter from '../../footer/PageFooter';
 
-import {Menubar} from "primereact/menubar";
 import {Panel} from "primereact/panel";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
@@ -27,7 +26,7 @@ class NetworkJournal extends Component {
 
     componentDidMount() {
         this.props.fetchAllNetworkJournal("http://localhost:8080/NetworkJournal/NetworkJournalAll");
-        this.props.visibleUpdate(false, null);
+        //this.props.visibleUpdate(false, null);
         if(this.props.device_info.length === 0){
             this.props.fetchAllDevice("http://localhost:8080/Devices/DevicesAll");
         }
@@ -74,7 +73,6 @@ class NetworkJournal extends Component {
                         }
                     }}
                    ></Column>
-
 
             <Column field="ip_address" header="IP-адресс" autoLayout = {true}
                     style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
@@ -228,10 +226,8 @@ class NetworkJournal extends Component {
                                     id_status: 1,
                                     name_status: ""
                                 };
-
-                                console.log(firstNetworkJournalInfo);
-                                console.log(updateNetworkJournalInfo);
-                                if(updateNetworkJournalInfo.toString() === firstNetworkJournalInfo.toString()){
+                                
+                                if(JSON.stringify(updateNetworkJournalInfo)=== JSON.stringify(firstNetworkJournalInfo)){
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
                                 }else {
@@ -280,11 +276,11 @@ class NetworkJournal extends Component {
                                 id_status: 1,
                                 name_status: ""
                             };
-                            this.props.setNetworkJournal("http://localhost:8080/Configuration/CreateConfiguration", createNetworkJournal);
+                            //this.props.setNetworkJournal("http://localhost:8080/Configuration/CreateConfiguration", createNetworkJournal);
                             this.props.visibleUpdate(false, null);
                         }
                         else {
-                            this.props.visibleUpdate(true, value.id_network_journal);
+                            this.props.visibleUpdate(true, -1);
                             this.props.DeviceUpdateValue({value: value.id_device, label: value.hostname});
                             this.props.NetworkUpdateValue({value: value.id_network, label: value.network });
                         }
@@ -304,6 +300,7 @@ class NetworkJournal extends Component {
     addNewLine(){
         return <Button  style={{width:'8%'}} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
             if(this.props.updateVisible.str === -1){
+                this.props.visibleUpdate(true, null);
             }
             else {
                 this.props.addNewLine(this.props.network_journal_info);
@@ -315,7 +312,6 @@ class NetworkJournal extends Component {
     render() {
         return (
             <div><PageFooter/>
-                <Menubar model={this.items} />
                 <Panel header="Журнал ip-адресного пространства" />
                     {this.networkJournal_table(this)}
                 <div align={'right'}>

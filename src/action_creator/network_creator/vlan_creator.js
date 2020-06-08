@@ -36,7 +36,6 @@ export function getAllVlan(type, url){
     }
 }
 
-
 export function setVlan(type, url, data) {
     return (dispatch) => {
         fetch(url, {

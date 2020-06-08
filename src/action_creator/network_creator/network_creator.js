@@ -1,3 +1,23 @@
+const defaultNetwork = {
+    date_old: "",
+    date_reg: "",
+    defaultGeteway: "",
+    dhcp_pool: "",
+    id_dhcp_pool: "",
+    id_network: -1,
+    id_pool_address: "",
+    id_status: "",
+    id_user_old: "",
+    id_user_reg: "",
+    id_vlan: "",
+    ip_address_network: "",
+    name_status: "",
+    networkMask: "",
+    pool_address: "",
+    user_old: "",
+    user_reg: "",
+    vlan: ""
+};
 
 export function getNetwork(type, all_network){
     switch (type) {
@@ -6,9 +26,26 @@ export function getNetwork(type, all_network){
                 type: "get_network",
                 all_network: all_network
             };
+        case "addNewLine":
+            all_network.push(defaultNetwork);
+            return {
+                type: "get_network",
+                all_network: all_network
+            };
+        case "deleteNewLine":
+            all_network.pop();
+            return {
+                type: "get_network",
+                all_network: all_network
+            };
         default: return [];
     }
 }
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getNetwork(type ,data))
+    }
+}
+
 export function getAllNetwork(type, url){
     return (dispatch) =>{
         fetch(url)
