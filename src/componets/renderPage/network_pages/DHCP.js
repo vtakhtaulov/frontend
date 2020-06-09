@@ -8,9 +8,14 @@ import 'primereact/resources/themes/nova-dark/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import {connect} from "react-redux";
-import {getAllDHCP} from "../../../action_creator/network_creator/DHCP_creator";
+import {
+    addNewLine,
+    deleteDHCP,
+    getAllDHCP,
+    setDHCP,
+    updateDHCP
+} from "../../../action_creator/network_creator/DHCP_creator";
 import {InputText} from "primereact/inputtext";
-import {Dropdown} from "primereact/dropdown";
 import {Button} from "primereact/button";
 import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 import {getStatusSelect} from "../../../action_creator/status_creator";
@@ -30,7 +35,7 @@ class DHCP extends Component {
             <Column field="address_start" header="Начальный адрес" autoLayout = {true}
                     style={{textAlign:'center', width: '160px'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
-                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_dhcp_pool)
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_DHCP_pool)
                         {return <div>
                                 <span className="p-float-label">
                                     <InputText id = "update_address_start" defaultValue={value.address_start} style={{textAlign:'center'}} />
@@ -46,7 +51,7 @@ class DHCP extends Component {
             <Column field="address_end" header="Конечный адрес" autoLayout = {true}
                     style={{textAlign:'center', width: '160px'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
-                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_dhcp_pool)
+                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_DHCP_pool)
                         {return <div>
                                 <span className="p-float-label">
                                     <InputText id = "update_address_end" defaultValue={value.address_end} style={{textAlign:'center'}} />
@@ -59,96 +64,114 @@ class DHCP extends Component {
                             </div>
                         }
                     }}></Column>
-            <Column field="is_status.name_status" header="Статус"
+            <Column field="is_status" header="Статус"
                     style={{textAlign:'center', width: '60px'}} sortable={true} filter={true} filterPlaceholder={"Активна/Удалена"} filterField = {"Активна"} filterMatchMode="contains"
                     body={(value) => {
-                        if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_dhcp_pool)
-                        {
-                            const Status = this.props.status_action.map((index)=>{
-                                return {label: index.name_status, value: index.id_status, name: index.name_status}
-                            });
-                            return <div>
-                                <Dropdown value={[this.props.selectStatus.label]} options={Status} filter={true}  editable ={true} placeholder={"Активна"}
-                                          id = "update_is_status"  style={{textAlign:'center'}}
-                                          className={'p-dropdown'}
-                                          onChange={(e)=>{
-                                              let label;
-                                              let value;
-                                              let data = this.props.status_action;
-                                              for(let i = 0 ; i<= data.length; i++) {
-                                                  if (data[i].id_status === e.value) {
-                                                      label = data[i].name_status;
-                                                      value = data[i].id_status;
-                                                      break;
-                                                  }
-                                              }
-                                              this.props.StatusUpdateValue({label: label, value: value});
-                                          }}/>
-                            </div>
-                        }
-                        else{
                             return <div>
                                 {value.is_status.name_status}
                             </div>
-                        }
                     }}></Column>
 
-            <Column style={{width:'30px'}} field="id_devices" header="Действие" body={(value) => {
-                if(value.Id_crossdevices!==-1){
-                    return <div>
+            <Column style={{ width: '60px' }} field="id_pool_address" header="Действие" body={(value) => {
+                if (value.id_DHCP_pool !== -1) {
+                    return <div><center>
                         <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
-                            if(this.props.updateVisible.visible === true){
-                                const updateDHCP = {
+                            if (this.props.updateVisible.visible === true) {
+                                let firstDHCP= {
+                                    id_DHCP_pool: value.id_DHCP_pool,
+                                    address_start: value.address_start,
+                                    address_end: value.address_end,
+                                    is_status: {
+                                        id_status: value.is_status.id_status,
+                                        name_status: value.is_status.name_status
+                                    }
                                 };
-                                //this.props.updateCrossDevice("http://localhost:8080/CrossDevices/UpdateCrossDevices/", Number(value.id_crossdevices), updateCorossDev);
-                                this.props.visibleUpdate(false, null);
-                                console.log(updateDHCP);
+
+                                let lastDHCP = {
+                                    id_DHCP_pool: value.id_DHCP_pool,
+                                    address_start: document.getElementById("update_address_start").value,
+                                    address_end: document.getElementById("update_address_end").value,
+                                    is_status: {
+                                        id_status: value.is_status.id_status,
+                                        name_status: value.is_status.name_status
+                                    }
+                                };
+
+                                if (JSON.stringify(firstDHCP) === JSON.stringify(lastDHCP)) {
+                                    alert("Информация не изменилась!");
+                                    this.props.visibleUpdate(false, null);
+                                } else {
+                                    this.props.visibleUpdate(false, null);
+                                    this.props.updateDHCP("http://localhost:8080/DHCP/UpdateDHCP/", Number(value.id_DHCP_pool), lastDHCP);
+                                }
                             }
                             else {
-                                this.props.visibleUpdate(true, value.id_dhcp_pool);
-                                this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
+                                this.props.visibleUpdate(true, value.id_vlan);
+
                             }
                         }}></Button>
                         <span> </span>
-                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
-                            if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                                const deleteDHCP = {
-                                };
-
-                                //this.props.updateCrossDevice("http://localhost:8080/CrossDevices/DeleteCrossDevices/", value.id_crossdevices, deleteCorossDev);
-                                console.log(deleteDHCP);
+                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={() => {
+                            if (window.confirm("Вы уверены, что хотите удалить запись?")) {
+                                this.props.deleteDHCP("http://localhost:8080/DHCP/DeleteDHCP/", value.id_DHCP_pool);
                             }
-                            else{
+                            else {
                             }
                         }}>
                         </Button>
+                    </center>
                     </div>
                 }
                 else {
-                    return <Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
-                        if(this.props.updateVisible.visible === true){
+                    return <div><center><Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
+                        if (this.props.updateVisible.visible === true) {
                             const createDHCP = {
+                                id_DHCP_pool: -2,
+                                address_start: document.getElementById("update_address_start").value,
+                                address_end: document.getElementById("update_address_end").value,
+                                is_status: {
+                                    id_status: 1,
+                                    name_status: null
+                                }
                             };
-
-                            console.log(createDHCP);
-                            //this.props.setConfiguration("http://localhost:8080/Configuration/CreateConfiguration", createCorossDev);
+                            this.props.setDHCP("http://localhost:8080/DHCP/CreateDHCP", createDHCP);
                             this.props.visibleUpdate(false, null);
                         }
                         else {
                             this.props.visibleUpdate(true, value.id_dhcp_pool);
-                            this.props.StatusUpdateValue({value: value.id_status, label: value.name_status});
                         }
-                    }}></Button>
-                }}}></Column>
+                    }}></Button> <span> </span>
+                        <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-minus' onClick={() => {
+                            this.props.deleteNewLine(this.props.dhcp_info);
+                            this.props.visibleUpdate(false, null);
+                        }}>
+                        </Button>
+                    </center>
+                    </div>
+                }
+            }}></Column>
         </DataTable>
     }
 
+    addNewLine() {
+        return <Button style={{ width: '13.5%' }} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
+            if (this.props.updateVisible.str === -1) {
+                this.props.visibleUpdate(true, false);
+            }
+            else {
+                this.props.addNewLine(this.props.dhcp_info);
+                this.props.visibleUpdate(true, -1);
+            }
+        }}></Button>
+    }
     render() {
         return (
             <div><PageFooter/>
-                <Panel header="Выделенные DHCP пулы сети">
+                <Panel header="Выделенные DHCP пулы сети"/>
                     {this.dhcp_table(this)}
-                </Panel>
+                <div align={'right'}>
+                    {this.addNewLine(this)}
+                </div>
                 
             </div>
         );
@@ -166,7 +189,12 @@ const  mapDispatchToProps = dispatch =>{
     return {
         fetchAllDhcp: url => dispatch(getAllDHCP("all",url)),
         visibleUpdate: (status,id) => dispatch(setStatusShowDialog("updateVisible",status,id)),
-        StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data))
+        StatusUpdateValue: (data) => dispatch(getStatusSelect("selectStatusValue", data)),
+        updateDHCP: (url, id, data) => dispatch(updateDHCP("all",url, id, data)),
+        deleteDHCP: (url, id, data) => dispatch(deleteDHCP("all",url, id)),
+        setDHCP:(url, data) => dispatch(setDHCP("all", url, data)),
+        addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
+        deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data))
     };
 };
 

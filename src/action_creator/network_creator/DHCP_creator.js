@@ -1,4 +1,14 @@
 
+const defaultDHCP = {
+    id_DHCP_pool: -1,
+    address_start: null,
+    address_end: null,
+    is_status: {
+        id_status: 1,
+        name_status: ""
+    }
+};
+
 export function getDHCPSuccess(type, dhcp_info){
     switch (type) {
         case "all":
@@ -6,7 +16,23 @@ export function getDHCPSuccess(type, dhcp_info){
                 type: "get_all_dhcp_success",
                 dhcp_info: dhcp_info
             };
+        case "addNewLine":
+            dhcp_info.push(defaultDHCP);
+            return {
+                type: "get_all_dhcp_success",
+                dhcp_info: dhcp_info
+            };
+        case "deleteNewLine":
+            dhcp_info.pop();
+            return {
+                type: "get_all_dhcp_success",
+                dhcp_info: dhcp_info
+            };
         default: return [];
+    }
+}
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getDHCPSuccess(type ,data))
     }
 }
 

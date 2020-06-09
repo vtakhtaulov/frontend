@@ -1,4 +1,11 @@
 
+const defaultNodes = {
+    id_nodes: -1,
+    id_user_otv: 0,
+    name_nodes: "",
+    usert_otv: ""
+};
+
 export function getNodesSuccess(type, nodes_info){
     switch (type) {
         case "all":
@@ -6,9 +13,27 @@ export function getNodesSuccess(type, nodes_info){
                 type: "get_all_nodes_success",
                 nodes_info: nodes_info
             };
+        case "addNewLine":
+            nodes_info.push(defaultNodes);
+            return {
+                type: "get_all_nodes_success",
+                nodes_info: nodes_info
+            };
+        case "deleteNewLine":
+            nodes_info.pop();
+            return {
+                type: "get_all_nodes_success",
+                nodes_info: nodes_info
+            };
         default: return [];
     }
 }
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getNodesSuccess(type ,data))
+    }
+}
+
 export function getNodesSelect(type, data){
     switch (type) {
         case "selectNodesValue":

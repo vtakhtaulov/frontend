@@ -1,4 +1,15 @@
 
+const defaultVlan = {
+    id_vlan: -1,
+    vlan_name: null,
+    vlan_number: null,
+    is_status: {
+        id_status: 1,
+        name_status: null
+    }
+};
+
+
 export function getVlanSuccess(type, vlan_info){
     switch (type) {
         case "all":
@@ -6,9 +17,27 @@ export function getVlanSuccess(type, vlan_info){
                 type: "get_all_vlan_success",
                 vlan_info: vlan_info
             };
+        case "addNewLine":
+            vlan_info.push(defaultVlan);
+            return {
+                type: "get_all_vlan_success",
+                vlan_info: vlan_info
+            };
+        case "deleteNewLine":
+            vlan_info.pop();
+            return {
+                type: "get_all_vlan_success",
+                vlan_info: vlan_info
+            };
         default: return [];
     }
 }
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getVlanSuccess(type ,data))
+    }
+}
+
 export function getVlanSelect(type, data){
     switch (type) {
         case "selectVlanValue":
@@ -16,6 +45,7 @@ export function getVlanSelect(type, data){
                 type: "selectVlanValue",
                 selectVlanValue: data
             };
+
         default: return [];
     }
 }
