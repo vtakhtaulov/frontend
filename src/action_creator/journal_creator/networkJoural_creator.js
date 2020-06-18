@@ -1,4 +1,4 @@
-let defaultValueNetworkJournal ={
+const defaultValueNetworkJournal ={
     id_network_journal: -1,
     id_network: null,
     network: null,

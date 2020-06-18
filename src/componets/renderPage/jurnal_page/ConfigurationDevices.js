@@ -136,9 +136,14 @@ class ConfigurationDevices extends Component{
             <Column field="user_old" header="Пользователь изменивший запись" autoLayout = {true}
                     style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
+                        if (value.id_user_old === 0) {
+                            return <div>
+                            </div>
+                        } else {
                             return <div>
                                 {value.user_old}
                             </div>
+                        }
                     }}></Column>
 
             <Column field="date_old" header="Дата изменения" autoLayout = {true}
@@ -194,7 +199,8 @@ class ConfigurationDevices extends Component{
                                     id_status: 2,
                                     name_status: ""
                                 };
-                                if(updateConfiguration.value === lastValue.value){
+
+                                if(JSON.stringify(updateConfiguration) === JSON.stringify(lastValue)){
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
                                 }else {

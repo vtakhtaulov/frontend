@@ -18,7 +18,7 @@ import AnalysisIP from './componets/renderPage/network_pages/AnalysisIP.js';
 import Room from './componets/renderPage/room_page/Room.js';
 import Topologi from './componets/renderPage/topolog_page/Topologi.js';
 
-import { BrowserRouter as Router, Route,Switch} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {connect} from "react-redux";
 import {getRefStatus} from "./action_creator/status_creator";
 

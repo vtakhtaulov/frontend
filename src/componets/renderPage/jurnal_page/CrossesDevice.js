@@ -21,7 +21,6 @@ import {
 import {getStatusSelect} from "../../../action_creator/status_creator";
 import {getVlanSelect} from "../../../action_creator/network_creator/vlan_creator";
 import {getCrossSelect} from "../../../action_creator/network_creator/crosses_creator";
-import {setSelectNetworkJournal} from "../../../action_creator/journal_creator/networkJoural_creator";
 
 
 class CrossesDevice extends Component {
@@ -30,7 +29,7 @@ class CrossesDevice extends Component {
         this.state = {};
     }
     async componentDidMount() {
-        await  this.props.fetchAllCrossDevice("http://localhost:8080/CrossDevices/CrossDevicesAll");
+        await this.props.fetchAllCrossDevice("http://localhost:8080/CrossDevices/CrossDevicesAll");
         await this.props.visibleUpdate(false, null);
     }
 
@@ -78,12 +77,11 @@ class CrossesDevice extends Component {
                             const last_device_info = this.props.infoCrossDevices.map((index)=>{
                                 return {label: index.hostname, value: index.id_devices, name: index.hostname}
                             });
-
                             return <div>
                                 <Dropdown  value={[this.props.selectDeviceLastValue.label]} options={last_device_info} editable ={true}
                                            id = "update_host_name_end"  style={{textAlign:'center'}} filter={true}
                                            className={'p-dropdown'}
-                                           onChange={async (e) => {
+                                           onChange={ (e) => {
                                                let label;
                                                let value;
                                                let data = this.props.infoCrossDevices;
@@ -94,9 +92,9 @@ class CrossesDevice extends Component {
                                                        break;
                                                    }
                                                }
+                                               this.props.getInfoCrossDeviceEnd("http://localhost:8080/Devices/SearchCrossDevicesInfo/", value);
+                                               this.props.LastDeviceUpdateValue({label: label, value: value})
 
-                                               await this.props.getInfoCrossDeviceEnd("http://localhost:8080/Devices/SearchCrossDevicesInfo/", value);
-                                               await this.props.LastDeviceUpdateValue({label: label, value: value})
                                            }}
                                 />
                             </div>
@@ -148,7 +146,7 @@ class CrossesDevice extends Component {
                     if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_crossdevices)
                     {
                         return <div>
-                            <label>{this.props.infoCrossDevicesEnd.user_dev_otv}</label>
+                            <label>{this.props.infoCrossDevicesEnd.fiouser}</label>
                         </div>
                     }
                     else {
@@ -341,8 +339,6 @@ class CrossesDevice extends Component {
                                     user_otv_dev: ""
                                 };
 
-                                console.log((document.getElementById('update_description').value));
-
                                 if(JSON.stringify(updateCorossDev)===JSON.stringify(firstCorossDev)){
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
@@ -506,7 +502,7 @@ const  mapDispatchToProps = dispatch =>{
         VlanUpdateValue: (data) => dispatch(getVlanSelect("selectVlanValue", data)),
         CrossesUpdateValue: (data) => dispatch(getCrossSelect("selectCrossesValue", data)),
         updateCrossDevice: (url, id, data) => dispatch(updateCrossDevice("all",url, id, data)),
-        UpdateSelectNetworkJournal: (data) => dispatch(setSelectNetworkJournal("selectNetwork_JournalValue", data)),
+        //UpdateSelectNetworkJournal: (data) => dispatch(setSelectNetworkJournal("selectNetwork_JournalValue", data)),
         addNewLine: (data) => dispatch(addNewLine("addNewLine", data)),
         deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data)),
         setCrossDevice:(url, data) => dispatch(setCrossDevice("all", url, data)),

@@ -7,12 +7,10 @@ import {Column} from "primereact/column";
 import {connect} from "react-redux";
 import {
     getAllNetworkJournal,
-    setNetworkJournal,
-    updateNetworkJournal
+    addNewLine, setNetworkJournal, updateNetworkJournal
 } from "../../../action_creator/journal_creator/networkJoural_creator";
 import {Button} from "primereact/button";
 import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
-import {addNewLine} from "../../../action_creator/journal_creator/configuration_creator";
 import {Dropdown} from "primereact/dropdown";
 import {getAllDevice, getDeviceSelect} from "../../../action_creator/device_creator/device_creator";
 import {InputText} from "primereact/inputtext";
@@ -43,9 +41,17 @@ class NetworkJournal extends Component {
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network_journal)
                         {
-                            const network_info = this.props.all_network.map((index)=>{
-                                return {label: (index.ip_address_network  +"/" + index.networkMask) , value: index.id_network, name: (index.ip_address_network  +"/" + index.networkMask) }
+                            const data = this.props.all_network.map((index)=>{
+                                    return {
+                                        label: (index.ip_address_network + "/" + index.networkMask),
+                                        value: index.id_network,
+                                        name: (index.ip_address_network + "/" + index.networkMask),
+                                        status: index.id_status
+                                    }
                             });
+
+                           const network_info = data.filter(e => e.status === 1);
+
                             return <div>
                                 <Dropdown  value={[this.props.selectNetwork.label]} options={network_info} editable ={true}
                                            id = "update_network"  style={{textAlign:'center'}} filter={true}
@@ -54,7 +60,7 @@ class NetworkJournal extends Component {
                                                let label;
                                                let value;
                                                let data = this.props.all_network;
-                                               for(let i = 0 ; i<= data.length; i++) {
+                                              for(let i = 0 ; i<= data.length; i++) {
                                                    if (data[i].id_network === e.value) {
                                                        label = (data[i].ip_address_network +"/" + data[i].networkMask);
                                                        value = data[i].id_network;
@@ -157,7 +163,7 @@ class NetworkJournal extends Component {
             <Column field="user_old" header="Пользователь изменивший запись" autoLayout = {true}
                     style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
-                        if(value.id_user_old===0){
+                        if(value.id_user_old === 0){
                             return <div>
                             </div>
                         }else{
@@ -183,7 +189,7 @@ class NetworkJournal extends Component {
                     }}></Column>
 
             <Column style={{width:'8%'}} field="id_network_journal" header="Действие" body={(value) => {
-                if(value.id_network_journal!==-1){
+                if(value.id_network_journal !== -1){
                     return <div><center>
                         <Button className="p-button-warning p-button-rounded" icon='pi pi-fw pi-pencil' onClick={() => {
                             if(this.props.updateVisible.visible === true){
@@ -226,12 +232,13 @@ class NetworkJournal extends Component {
                                     id_status: 1,
                                     name_status: ""
                                 };
-                                
+
+                                console.log(updateNetworkJournalInfo);
                                 if(JSON.stringify(updateNetworkJournalInfo)=== JSON.stringify(firstNetworkJournalInfo)){
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
                                 }else {
-                                    //this.props.updateConfiguration("http://localhost:8080/Configuration/UpdateConfiguration/", Number(value.id_network_journal), updateNetworkInfo);
+                                    this.props.updateNetworkJournal("http://localhost:8080/NetworkJournal/UpdateNetworkJournal/", Number(value.id_network_journal), updateNetworkJournalInfo);
                                     this.props.visibleUpdate(false, null);
                                 }
                             }
@@ -244,10 +251,24 @@ class NetworkJournal extends Component {
                         <span> </span>
                         <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
                             if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                                const deleteConfiguration = {
-
+                                const deleteNetworkJournal = {
+                                    id_network_journal: value.id_network_journal,
+                                    id_network: value.id_network,
+                                    network: value.network,
+                                    DNS_zone: value.DNS_zone,
+                                    date_reg: value.date_reg,
+                                    date_old: value.date_old,
+                                    ip_address: value.ip_address,
+                                    id_user_reg: value.id_user_reg,
+                                    user_reg: value.user_reg,
+                                    id_user_old: this.props.user_auth_info.id_user_old,
+                                    user_old: this.props.user_auth_info.fioUser,
+                                    id_devices: value.id_devices,
+                                    hostname: value.hostname,
+                                    id_status: 2,
+                                    name_status: ""
                                 };
-                               // this.props.updateConfiguration("http://localhost:8080/Configuration/DeleteConfiguration/", value.id_config, deleteConfiguration);
+                                this.props.updateNetworkJournal("http://localhost:8080/NetworkJournal/DeleteNetworkJournal/", value.id_network_journal, deleteNetworkJournal);
                             }
                             else{
                             }
@@ -260,23 +281,23 @@ class NetworkJournal extends Component {
                     return <div><center><Button className="p-button-success p-button-rounded" icon='pi pi-fw pi-plus' onClick={() => {
                         if(this.props.updateVisible.visible === true){
                             const createNetworkJournal = {
-                                id_network_journal: 0,
+                                id_network_journal: 1,
                                 id_network: this.props.selectNetwork.value,
                                 network: this.props.selectNetwork.label,
                                 DNS_zone: document.getElementById("update_DNS_zone").value,
-                                date_reg: new Date().toDateString(),
-                                date_old: null,
+                                date_reg: "",
+                                date_old: "",
                                 ip_address: document.getElementById("update_ip_address").value,
                                 id_user_reg: this.props.user_auth_info.user_id,
                                 user_reg: this.props.user_auth_info.fioUser,
                                 id_user_old: 0,
                                 user_old: "",
                                 id_devices: this.props.selectDeviceValue.value,
-                                devices: this.props.selectDeviceValue.label,
+                                hostname: this.props.selectDeviceValue.label,
                                 id_status: 1,
                                 name_status: ""
                             };
-                            //this.props.setNetworkJournal("http://localhost:8080/Configuration/CreateConfiguration", createNetworkJournal);
+                            this.props.setNetworkJournal("http://localhost:8080/NetworkJournal/CreateNetworkJournal", createNetworkJournal);
                             this.props.visibleUpdate(false, null);
                         }
                         else {
@@ -300,7 +321,7 @@ class NetworkJournal extends Component {
     addNewLine(){
         return <Button  style={{width:'8%'}} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
             if(this.props.updateVisible.str === -1){
-                this.props.visibleUpdate(true, null);
+                this.props.visibleUpdate(true, false);
             }
             else {
                 this.props.addNewLine(this.props.network_journal_info);
@@ -330,7 +351,6 @@ const  mapStateToProps  = state => {
         selectDeviceValue: state.device_reduser.selectDeviceValue,
         all_network: state.network_reduser.all_network,
         selectNetwork: state.network_reduser.selectNetwork,
-
     };
 };
 const  mapDispatchToProps = dispatch =>{
@@ -343,8 +363,8 @@ const  mapDispatchToProps = dispatch =>{
         NetworkUpdateValue: (data) => dispatch(getNetworkSelect("selectNetworkValue", data)),
         fetchAllDevice: url => dispatch(getAllDevice("all",url)),
         fetchAllNetwork: url => dispatch(getAllNetwork("all",url)),
-        setNetworkJournal: (url, data) => dispatch(setNetworkJournal("all", data)),
-        updateNetworkJournal: (url, id, data) => dispatch(updateNetworkJournal("all", id, data))
+        setNetworkJournal: (url, data) => dispatch(setNetworkJournal("all",url, data)),
+        updateNetworkJournal: (url, id, data) => dispatch(updateNetworkJournal("all", url,id, data))
     };
 };
 

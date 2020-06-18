@@ -18,6 +18,7 @@ import { getStatusSelect } from "../../../action_creator/status_creator";
 import { getAllVlan, getVlanSelect } from "../../../action_creator/network_creator/vlan_creator";
 import { getAllNetworkPool, getNetworkPoolSelect } from "../../../action_creator/network_creator/network_pool_creator";
 import { getAllDHCP, getDHCPSelect} from "../../../action_creator/network_creator/DHCP_creator";
+import {ProgressBar} from "primereact/progressbar";
 
 
 class Network extends Component {
@@ -72,7 +73,7 @@ class Network extends Component {
                 }}></Column>
 
             <Column field="ip_address_network" header="ip-адресс сети / маска" autoLayout={true}
-                style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
+                style={{ textAlign: 'center', width: '160px' }} sortable={true} filter={true} filterMatchMode="contains"
                 body={(value) => {
                     if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network) {
                         return <div>
@@ -188,6 +189,21 @@ class Network extends Component {
         }
     }}/>
 
+            <Column field="status_network" header="Назначенных хостов" autoLayout={true}
+                    style={{ textAlign: 'center', width: "150px" }} sortable={true} filter={true} filterMatchMode="contains"
+                    body={(value) => {
+                        if(value.id_status === 1) {
+                            return <div>
+                                <ProgressBar value={value.status_network} />
+                                <div>{value.name_stat_network}</div>
+
+                            </div>
+                        }else{
+                            return <div></div>
+                        }
+
+                    }}></Column>
+
             <Column field="user_reg" header="Пользователь создавший запись" autoLayout={true}
                 style={{ textAlign: 'center' }} sortable={true} filter={true} filterMatchMode="contains"
                 body={(value) => {
@@ -265,7 +281,9 @@ class Network extends Component {
                                     date_reg: value.date_reg,
                                     date_old: null,
                                     id_status: value.id_status,
-                                    name_status: value.name_status
+                                    name_status: value.name_status,
+                                    status_network: 0,
+                                    name_stat_network: ""
                                 };
 
                                 let lastNetworkInfo = {
@@ -287,6 +305,8 @@ class Network extends Component {
                                     date_old: null,
                                     id_status: value.id_status,
                                     name_status: value.name_status,
+                                    status_network: 0,
+                                    name_stat_network: ""
                                 };
 
                                 if (JSON.stringify(firstNetworkInfo) === JSON.stringify(lastNetworkInfo)) {
@@ -334,6 +354,8 @@ class Network extends Component {
                                     date_old: "",
                                     id_status: value.id_status,
                                     name_status: value.name_status,
+                                    status_network: 0,
+                                    name_stat_network: ""
                                 };
 
                                 this.props.deleteNetwork("http://localhost:8080/Network/DeleteNetwork/", value.id_network, deleteNetwork);
@@ -366,7 +388,9 @@ class Network extends Component {
                                 date_reg: null,
                                 date_old: null,
                                 id_status: 1,
-                                name_status: ""
+                                name_status: "",
+                                status_network: 0,
+                                name_stat_network: ""
                             };
 
                             this.props.setNetwork("http://localhost:8080/Network/CreateNetwork", createNetwork);

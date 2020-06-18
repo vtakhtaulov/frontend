@@ -1,24 +1,42 @@
 
+const defaultCross = {
+    id_crosses: -1,
+    id_crosses_end: "",
+    id_crosses_first: "",
+    infoCrosses: "",
+    port: "",
+    shkaf: "",
+    slot: ""
+};
+
 export function getCrossSuccess(type, crosses_info){
     switch (type) {
         case "all":
-            crosses_info.push({
-                id_crosses: null,
-                id_crosses_end: null,
-                id_crosses_first: null,
-                infoCrosses: null,
-                port: null,
-                shkaf: null,
-                slot: null
-            });
+            return {
+                type: "get_all_crosses_success",
+                crosses_info: crosses_info
+            };
+        case "addNewLine":
+            crosses_info.push(defaultCross);
+            return {
+                type: "get_all_crosses_success",
+                crosses_info: crosses_info
+            };
+        case "deleteNewLine":
+            crosses_info.pop();
             return {
                 type: "get_all_crosses_success",
                 crosses_info: crosses_info
             };
         default: return [];
     }
-
 }
+
+export function addNewLine(type, data){
+    return (dispatch) =>{ dispatch( getCrossSuccess(type ,data))
+    }
+}
+
 export function getCrossSelect(type, data){
     switch (type) {
         case "selectCrossesValue":

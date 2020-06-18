@@ -1,9 +1,9 @@
 
 const defaultConfig ={
     id_crossdevices: -1,
-    id_devices_first: 0,
+    id_devices_first: null,
     host_name_start: "",
-    id_devices_end: 0,
+    id_devices_end: null,
     host_name_end: "",
     id_user_otv: 0,
     user_otv: "",

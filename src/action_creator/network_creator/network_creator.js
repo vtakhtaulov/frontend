@@ -16,7 +16,9 @@ const defaultNetwork = {
     pool_address: "",
     user_old: "",
     user_reg: "",
-    vlan: ""
+    vlan: "",
+    status_network: 0,
+    name_stat_network: ""
 };
 
 export function getNetwork(type, all_network){
