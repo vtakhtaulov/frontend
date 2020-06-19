@@ -4,7 +4,8 @@ import {
     selectDeviceLastValue,
     selectDeviceValue,
     getInfoCrossDevicesEnd,
-    getInfoCrossDevices
+    getInfoCrossDevices,
+    getInfoConnectDevices
 } from "../../action/device_action/device_action";
 
 const device_reduser = combineReducers({
@@ -12,7 +13,8 @@ const device_reduser = combineReducers({
     selectDeviceValue: selectDeviceValue,
     selectDeviceLastValue: selectDeviceLastValue,
     infoCrossDevicesEnd: getInfoCrossDevicesEnd,
-    infoCrossDevices: getInfoCrossDevices
+    infoCrossDevices: getInfoCrossDevices,
+    infoConnectDevices: getInfoConnectDevices
 });
 
 export default device_reduser;

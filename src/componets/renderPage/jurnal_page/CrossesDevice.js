@@ -16,7 +16,7 @@ import {Button} from "primereact/button";
 import {setStatusShowDialog} from "../../../action_creator/action_users_creator";
 import {
     getDeviceLastSelect,
-    getDeviceSelect, getInfoCrossDevice, getInfoCrossDeviceEnd
+    getDeviceSelect, getInfoConnectDevice, getInfoCrossDevice, getInfoCrossDeviceEnd
 } from "../../../action_creator/device_creator/device_creator";
 import {getStatusSelect} from "../../../action_creator/status_creator";
 import {getVlanSelect} from "../../../action_creator/network_creator/vlan_creator";
@@ -40,7 +40,7 @@ class CrossesDevice extends Component {
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_crossdevices)
                         {
-                            const device_info = this.props.device_info.map((index)=>{
+                            const device_info = this.props.infoConnectDevices.map((index)=>{
                                 return {label: index.hostname, value: index.id_devices, name: index.hostname}
                             });
 
@@ -50,7 +50,7 @@ class CrossesDevice extends Component {
                                            onChange={(e)=>{
                                                let label;
                                                let value;
-                                               let data = this.props.device_info;
+                                               let data = this.props.infoConnectDevices;
                                                for(let i = 0 ; i<= data.length; i++) {
                                                    if (data[i].id_devices === e.value) {
                                                        label = data[i].hostname;
@@ -74,9 +74,18 @@ class CrossesDevice extends Component {
                     body={ (value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_crossdevices)
                         {
-                            const last_device_info = this.props.infoCrossDevices.map((index)=>{
-                                return {label: index.hostname, value: index.id_devices, name: index.hostname}
-                            });
+                            var last_device_info = [];
+                            let data = this.props.infoConnectDevices;
+                                for (let i = 0; i<  data.length; i++){
+                                    if(data[i].id_devices !== this.props.selectDeviceValue.value) {
+                                        last_device_info.push({
+                                            label: data[i].hostname,
+                                            value: data[i].id_devices,
+                                            name: data[i].hostname
+                                        });
+                                    }
+                                    else {}
+                                }
                             return <div>
                                 <Dropdown  value={[this.props.selectDeviceLastValue.label]} options={last_device_info} editable ={true}
                                            id = "update_host_name_end"  style={{textAlign:'center'}} filter={true}
@@ -84,7 +93,7 @@ class CrossesDevice extends Component {
                                            onChange={ (e) => {
                                                let label;
                                                let value;
-                                               let data = this.props.infoCrossDevices;
+                                               let data = this.props.infoConnectDevices;
                                                for (let i = 0; i <= data.length; i++) {
                                                    if (data[i].id_devices === e.value) {
                                                        label = data[i].hostname;
@@ -414,11 +423,12 @@ class CrossesDevice extends Component {
                                 name_vlan: this.props.infoCrossDevicesEnd.vlan_name,
                                 id_crosses: this.props.selectCrosses.value,
                                 info_crosses: this.props.selectCrosses.label,
-                                id_status: this.props.selectStatus.value,
-                                name_status: this.props.selectStatus.label,
+                                id_status: 1,
+                                name_status: "",
                                 inventar_number: "",
                                 user_otv_dev: ""
                             };
+                            console.log(createCorossDev);
                             this.props.setCrossDevice("http://localhost:8080/CrossDevices/CreateCrossDevices", createCorossDev);
                             this.props.visibleUpdate(false, null);
                         }
@@ -449,11 +459,13 @@ class CrossesDevice extends Component {
             if(this.props.updateVisible.str === -1){
                 this.props.visibleUpdate(true, false);
                 this.props.getInfoCrossDevice("http://localhost:8080/Devices/getAllCrossDevicesInfo/");
+                this.props.getInfoConnectDevice("http://localhost:8080/Devices/getNetJournalDeviceFilter");
             }
             else {
                 this.props.addNewLine(this.props.cross_device_info);
                 this.props.visibleUpdate(true, -1);
                 this.props.getInfoCrossDevice("http://localhost:8080/Devices/getAllCrossDevicesInfo/");
+                this.props.getInfoConnectDevice("http://localhost:8080/Devices/getNetJournalDeviceFilter");
             }
         }}></Button>
     }
@@ -488,7 +500,8 @@ const  mapStateToProps  = state => {
         selectNetwork_Journal: state.networkJournal_reduser.selectNetwork_Journal,
         network_journal_info:state.networkJournal_reduser.network_journal_info,
         infoCrossDevicesEnd: state.device_reduser.infoCrossDevicesEnd,
-        infoCrossDevices: state.device_reduser.infoCrossDevices
+        infoCrossDevices: state.device_reduser.infoCrossDevices,
+        infoConnectDevices: state.device_reduser.infoConnectDevices
 
     };
 };
@@ -507,7 +520,8 @@ const  mapDispatchToProps = dispatch =>{
         deleteNewLine: (data) => dispatch(addNewLine("deleteNewLine", data)),
         setCrossDevice:(url, data) => dispatch(setCrossDevice("all", url, data)),
         getInfoCrossDeviceEnd: (url, id) => dispatch(getInfoCrossDeviceEnd("all", url, id)),
-        getInfoCrossDevice: (url) => dispatch(getInfoCrossDevice("all", url))
+        getInfoCrossDevice: (url) => dispatch(getInfoCrossDevice("all", url)),
+        getInfoConnectDevice: (url) => dispatch(getInfoConnectDevice("all", url))
     };
 };
 

@@ -41,3 +41,12 @@ export function getInfoCrossDevices (state = [], action) {
             return state;
     }
 }
+
+export function getInfoConnectDevices (state = [], action) {
+    switch(action.type) {
+        case "infoConnectDevices":
+            return action.infoConnectDevices;
+        default:
+            return state;
+    }
+}

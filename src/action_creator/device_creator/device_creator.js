@@ -62,6 +62,17 @@ export function getCrossDevicesSuccess(type, infoCrossDevices){
     }
 }
 
+export function getConnectDevicesSuccess(type, infoConnectDevices){
+    switch (type) {
+        case "all":
+            return {
+                type: "infoConnectDevices",
+                infoConnectDevices: infoConnectDevices
+            };
+        default: return [];
+    }
+}
+
 export function addNewLine(type, data){
     return (dispatch) =>{ dispatch( getDeviceSuccess(type ,data))
     }
@@ -201,6 +212,26 @@ export function getInfoCrossDevice(type, url) {
             .then(response => response.json())
             .then(infoCrossDevices => dispatch(
                 getCrossDevicesSuccess(type,  infoCrossDevices))
+            )
+    }
+}
+
+
+export function getInfoConnectDevice(type, url) {
+    return (dispatch) => {
+        fetch(url, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'GET'
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(infoConnectDevices => dispatch(
+                getConnectDevicesSuccess(type,  infoConnectDevices))
             )
     }
 }
