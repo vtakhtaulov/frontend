@@ -43,6 +43,17 @@ export function getNetwork(type, all_network){
         default: return [];
     }
 }
+
+export function getIpAddressFisterS(type, all_address){
+    switch (type) {
+        case "all":
+            return {
+                type: "get_address",
+                all_address: all_address
+            };
+        default: return [];
+    }
+}
 export function addNewLine(type, data){
     return (dispatch) =>{ dispatch( getNetwork(type ,data))
     }
@@ -68,6 +79,17 @@ export function getNetworkSelect(type, data){
             return {
                 type: "selectNetworkValue",
                 selectNetworkValue: data
+            };
+        default: return [];
+    }
+}
+
+export function getIPSelect(type, data){
+    switch (type) {
+        case "selectIPValue":
+            return {
+                type: "selectIPValue",
+                selectIPValue: data
             };
         default: return [];
     }
@@ -135,5 +157,22 @@ export function updateNetwork(type, url, id,data) {
             .then(all_network => dispatch(
                 getNetwork(type, all_network))
             )
+    }
+}
+
+export function getIpAddressFister(type,url, id){
+    return (dispatch) =>{
+        fetch(url+id, {
+            credentials: "same-origin", //передаем сессионные данные
+            method: 'GET'
+        })
+            .then(response =>{
+                if(response.status!==200){
+                    throw new Error(response.statusText)
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then( all_address => dispatch(getIpAddressFisterS(type, all_address)))
     }
 }

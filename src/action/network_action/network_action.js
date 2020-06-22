@@ -15,3 +15,21 @@ export function selectNetwork (state = [], action) {
             return state;
     }
 }
+
+export function selectIP (state = [], action) {
+    switch(action.type) {
+        case "selectIPValue":
+            return action.selectIPValue;
+        default:
+            return state;
+    }
+}
+
+export function selectIpAddress (state = [], action) {
+    switch(action.type) {
+        case "get_address":
+            return action.all_address;
+        default:
+            return state;
+    }
+}

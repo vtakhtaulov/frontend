@@ -14,7 +14,11 @@ import {setStatusShowDialog} from "../../../action_creator/action_users_creator"
 import {Dropdown} from "primereact/dropdown";
 import {getAllDevice, getDeviceSelect} from "../../../action_creator/device_creator/device_creator";
 import {InputText} from "primereact/inputtext";
-import {getAllNetwork, getNetworkSelect} from "../../../action_creator/network_creator/network_creator";
+import {
+    getAllNetwork,
+    getIpAddressFister, getIPSelect,
+    getNetworkSelect
+} from "../../../action_creator/network_creator/network_creator";
 
 class NetworkJournal extends Component {
     constructor(props) {
@@ -56,7 +60,7 @@ class NetworkJournal extends Component {
                                 <Dropdown  value={[this.props.selectNetwork.label]} options={network_info} editable ={true}
                                            id = "update_network"  style={{textAlign:'center'}} filter={true}
                                            className={'p-dropdown'}
-                                           onChange={(e)=>{
+                                           onChange={async (e)=>{
                                                let label;
                                                let value;
                                                let data = this.props.all_network;
@@ -67,7 +71,9 @@ class NetworkJournal extends Component {
                                                        break;
                                                    }
                                                }
-                                               this.props.NetworkUpdateValue({label: label, value: value})
+                                               await this.props.NetworkUpdateValue({label: label, value: value});
+                                               await this.props.getIpAddressFister("http://localhost:8080/NetworkJournal/NetworkJournalIpFilter/", value);
+                                               this.props.IPSelect({label: "", value: 0});
                                            }}
                                 />
                             </div>
@@ -81,11 +87,42 @@ class NetworkJournal extends Component {
                    ></Column>
 
             <Column field="ip_address" header="IP-адресс" autoLayout = {true}
-                    style={{textAlign:'center', size: 'auto'}} sortable={true} filter={true} filterMatchMode="contains"
+                    style={{textAlign:'center', width: '250px'}} sortable={true} filter={true} filterMatchMode="contains"
                     body={(value) => {
                         if (this.props.updateVisible.visible === true && this.props.updateVisible.str === value.id_network_journal)
                         {
-                            return <InputText id = "update_ip_address" defaultValue={value.ip_address}></InputText>
+                            let i = -1;
+                            const data = this.props.selectIpAddress.map((index)=>{
+                                i++;
+                                return {
+                                    label: (index.ip_address),
+                                    value: i,
+                                    name: (index.ip_address)
+                                }
+                            });
+                            console.log(data);
+                            return <div>
+                                <Dropdown  value={[this.props.selectIP.label]} options={data} editable ={true}
+                                     id = "update_network"  style={{textAlign:'center', width: '230px'}} filter={true}
+                                    className={'p-dropdown'}
+                                    onChange={(e)=>{
+                                    let label;
+                                    let value;
+                                    let data = this.props.selectIpAddress;
+
+                                    for(let i = 0 ; i<= data.length; i++) {
+                                        console.log(data[i].id );
+                                        console.log(e.value );
+                                            if (data[i].id === e.value) {
+                                            label = data[i].ip_address;
+                                            value = data[i].id;
+                                            break;
+                                    }
+                            }
+                            this.props.IPSelect({label: label, value: value});
+                        }}
+                            />
+                        </div>
                         }
                         else {
                             return <div>
@@ -207,7 +244,7 @@ class NetworkJournal extends Component {
                                     DNS_zone: document.getElementById("update_DNS_zone").value,
                                     date_reg: value.date_reg,
                                     date_old: new Date().toDateString(),
-                                    ip_address: document.getElementById("update_ip_address").value,
+                                    ip_address: this.props.selectIP.label,
                                     id_user_reg: value.id_user_reg,
                                     user_reg: value.user_reg,
                                     id_user_old: this.props.user_auth_info.user_id,
@@ -287,7 +324,7 @@ class NetworkJournal extends Component {
                                 DNS_zone: document.getElementById("update_DNS_zone").value,
                                 date_reg: "",
                                 date_old: "",
-                                ip_address: document.getElementById("update_ip_address").value,
+                                ip_address:this.props.selectIP.label,
                                 id_user_reg: this.props.user_auth_info.user_id,
                                 user_reg: this.props.user_auth_info.fioUser,
                                 id_user_old: 0,
@@ -322,10 +359,12 @@ class NetworkJournal extends Component {
         return <Button  style={{width:'8%'}} label={"Добавить"} className="p-button-secondary p-button-severities" icon='pi pi-fw pi-plus' onClick={() => {
             if(this.props.updateVisible.str === -1){
                 this.props.visibleUpdate(true, false);
+                this.props.IPSelect({label: "", value: 0});
             }
             else {
                 this.props.addNewLine(this.props.network_journal_info);
                 this.props.visibleUpdate(true, -1);
+                this.props.IPSelect({label: "", value: 0});
             }
         }}></Button>
     }
@@ -351,6 +390,9 @@ const  mapStateToProps  = state => {
         selectDeviceValue: state.device_reduser.selectDeviceValue,
         all_network: state.network_reduser.all_network,
         selectNetwork: state.network_reduser.selectNetwork,
+        selectIpAddress: state.network_reduser.selectIpAddress,
+        selectIP: state.network_reduser.selectIP
+
     };
 };
 const  mapDispatchToProps = dispatch =>{
@@ -364,7 +406,9 @@ const  mapDispatchToProps = dispatch =>{
         fetchAllDevice: url => dispatch(getAllDevice("all",url)),
         fetchAllNetwork: url => dispatch(getAllNetwork("all",url)),
         setNetworkJournal: (url, data) => dispatch(setNetworkJournal("all",url, data)),
-        updateNetworkJournal: (url, id, data) => dispatch(updateNetworkJournal("all", url,id, data))
+        updateNetworkJournal: (url, id, data) => dispatch(updateNetworkJournal("all", url,id, data)),
+        getIpAddressFister: (url, id) => dispatch(getIpAddressFister("all", url,id)),
+        IPSelect: (data) => dispatch(getIPSelect("selectIPValue", data))
     };
 };
 
