@@ -44,7 +44,7 @@ export function getNetwork(type, all_network){
     }
 }
 
-export function getIpAddressFisterS(type, all_address){
+export function getIpAddressFilterS(type, all_address){
     switch (type) {
         case "all":
             return {
@@ -160,7 +160,7 @@ export function updateNetwork(type, url, id,data) {
     }
 }
 
-export function getIpAddressFister(type,url, id){
+export function getIpAddressFilter(type,url, id){
     return (dispatch) =>{
         fetch(url+id, {
             credentials: "same-origin", //передаем сессионные данные
@@ -173,6 +173,6 @@ export function getIpAddressFister(type,url, id){
                 return response;
             })
             .then(response => response.json())
-            .then( all_address => dispatch(getIpAddressFisterS(type, all_address)))
+            .then( all_address => dispatch(getIpAddressFilterS(type, all_address)))
     }
 }

@@ -15,8 +15,8 @@ import {Dropdown} from "primereact/dropdown";
 import {getAllDevice, getDeviceSelect} from "../../../action_creator/device_creator/device_creator";
 import {InputText} from "primereact/inputtext";
 import {
-    getAllNetwork,
-    getIpAddressFister, getIPSelect,
+    getAllNetwork, getIpAddressFilter,
+    getIPSelect,
     getNetworkSelect
 } from "../../../action_creator/network_creator/network_creator";
 
@@ -72,7 +72,7 @@ class NetworkJournal extends Component {
                                                    }
                                                }
                                                await this.props.NetworkUpdateValue({label: label, value: value});
-                                               await this.props.getIpAddressFister("http://localhost:8080/NetworkJournal/NetworkJournalIpFilter/", value);
+                                               await this.props.getIpAddressFilter("http://localhost:8080/NetworkJournal/NetworkJournalIpFilter/", value);
                                                this.props.IPSelect({label: "", value: 0});
                                            }}
                                 />
@@ -100,7 +100,6 @@ class NetworkJournal extends Component {
                                     name: (index.ip_address)
                                 }
                             });
-                            console.log(data);
                             return <div>
                                 <Dropdown  value={[this.props.selectIP.label]} options={data} editable ={true}
                                      id = "update_network"  style={{textAlign:'center', width: '230px'}} filter={true}
@@ -111,8 +110,6 @@ class NetworkJournal extends Component {
                                     let data = this.props.selectIpAddress;
 
                                     for(let i = 0 ; i<= data.length; i++) {
-                                        console.log(data[i].id );
-                                        console.log(e.value );
                                             if (data[i].id === e.value) {
                                             label = data[i].ip_address;
                                             value = data[i].id;
@@ -269,8 +266,6 @@ class NetworkJournal extends Component {
                                     id_status: 1,
                                     name_status: ""
                                 };
-
-                                console.log(updateNetworkJournalInfo);
                                 if(JSON.stringify(updateNetworkJournalInfo)=== JSON.stringify(firstNetworkJournalInfo)){
                                     alert("Информация не изменилась!");
                                     this.props.visibleUpdate(false, null);
@@ -407,7 +402,7 @@ const  mapDispatchToProps = dispatch =>{
         fetchAllNetwork: url => dispatch(getAllNetwork("all",url)),
         setNetworkJournal: (url, data) => dispatch(setNetworkJournal("all",url, data)),
         updateNetworkJournal: (url, id, data) => dispatch(updateNetworkJournal("all", url,id, data)),
-        getIpAddressFister: (url, id) => dispatch(getIpAddressFister("all", url,id)),
+        getIpAddressFilter: (url, id) => dispatch(getIpAddressFilter("all", url,id)),
         IPSelect: (data) => dispatch(getIPSelect("selectIPValue", data))
     };
 };

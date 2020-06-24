@@ -307,7 +307,7 @@ class Devices extends Component {
                     <span> </span>
                     <Button className="p-button-rounded p-button-danger" icon='pi pi-fw pi-trash' onClick={()=>{
                         if(window.confirm("Вы уверены, что хотите удалить запись?")){
-                            this.props.deleteDevice("http://localhost:8080/Devices/DeleteDevices/", value.id_devices);
+                            this.props.deleteDevice("http://localhost:8080/Devices/DeleteDevices/", value.id_devices, this.props.user_auth_info.user_id);
                         }
                         else{
                         }
@@ -383,6 +383,7 @@ const  mapStateToProps  = state => {
         deleteVisible: state.action_visible.deleteVisible.visible,
         updateVisible: state.action_visible.updateVisible,
         user_info: state.user_reduser.user_info,
+        user_auth_info: state.user_reduser.user_auth_info,
         type_device_info: state.type_device_reduser.type_device_info,
         selectDeviceValue: state.device_reduser.selectDeviceValue,
         selectUserValue: state.user_reduser.selectUserValue,
@@ -395,7 +396,7 @@ const  mapStateToProps  = state => {
 const  mapDispatchToProps = dispatch =>{
     return {
         fetchAllDevice: url => dispatch(getAllDevice("all",url)),
-        deleteDevice: (url, data)  => dispatch(deleteDevice("all",url,data)),
+        deleteDevice: (url, data, id_user)  => dispatch(deleteDevice("all",url,data,id_user)),
         setDevice: (url, data) => dispatch(setDevice("all",url, data)),
         updateDevice: (url, id, data) => dispatch(updateDevice("all",url, id, data)),
         visible: status => dispatch(setStatusShowDialog("showDialog",status)),

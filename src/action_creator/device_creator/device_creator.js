@@ -136,9 +136,9 @@ export function setDevice(type, url, data) {
     }
 }
 
-export function deleteDevice(type, url, data) {
+export function deleteDevice(type, url, data, id_user) {
     return (dispatch) => {
-        fetch(url + data, {
+        fetch(url + data + id_user, {
             credentials: "same-origin", //передаем сессионные данные
             method: 'DELETE'
         })

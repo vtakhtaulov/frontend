@@ -20,7 +20,6 @@ import { getAllNetworkPool, getNetworkPoolSelect } from "../../../action_creator
 import { getAllDHCP, getDHCPSelect} from "../../../action_creator/network_creator/DHCP_creator";
 import {ProgressBar} from "primereact/progressbar";
 
-
 class Network extends Component {
     constructor(props) {
         super(props);
@@ -42,7 +41,7 @@ class Network extends Component {
                             this.props.fetchAllNetworkPool("http://localhost:8080/Pool/PoolAll");
                         } else { }
                         const device_info = this.props.network_pool.map((index) => {
-                            return { label: index.ip_addres_start + '-' + index.ip_addres_end, value: index.id_pool_address, name: index.ip_addres_start + '-' + index.ip_addres_end }
+                            return { label: index.name_pool, value: index.id_pool_address, name: index.name_pool}
                         });
 
                         return <div>
@@ -55,7 +54,7 @@ class Network extends Component {
                                     let data = this.props.network_pool;
                                     for (let i = 0; i <= data.length; i++) {
                                         if (data[i].id_pool_address === e.value) {
-                                            label = data[i].ip_addres_start + '-' + data[i].ip_addres_end;
+                                            label = data[i].name_pool;
                                             value = data[i].id_pool_address;
                                             break;
                                         }
